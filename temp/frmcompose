@@ -1,0 +1,37 @@
+#! /usr/bin/perl
+
+use CGI qw(:standard);
+use strict;
+
+use drmdef;
+use drmsettings;
+
+GetSettings();
+
+$| = 1;
+print header;
+
+my $headerheight = '225';
+
+use vars qw($DEBUG);
+
+my $BORDER = $DEBUG ? 1 : 0;
+
+my $args = join("+", @ARGV);
+if ($args ne '')
+{
+	$args =~ s/\\//g;
+	$args =~ s/&/&amp;/g;
+	$args =~ s/</&lt;/g;
+	$args =~ s/>/&gt;/g;
+	$args = '+' . $args;
+}
+
+print <<EOM;
+<frameset rows="$headerheight,*" framespacing=0 frameborder=$BORDER border=1>
+	<frame name=DRMComposeHeader marginheight=0 marginwidth=0 scrolling=no NORESIZE src=compose?-h$args>
+	<frame name=DRMComposeBody marginheight=5 marginwidth=5 src=compose?-b$args>
+</frameset>
+EOM
+
+exit 0;

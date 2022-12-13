@@ -1,0 +1,100 @@
+#! /usr/bin/perl
+
+use strict;
+
+use drmdef;
+
+$| = 1;
+print header;
+
+print <<EOM;
+Content-Type: text/html
+
+<html>
+EOM
+
+my $body = '';
+my $inbuf;
+read(STDIN, $inbuf, $ENV{'CONTENT_LENGTH'});
+my @pairs = split(/&/, $inbuf);
+my $pair;
+my $MailHTML = '';
+my $rows = 20;
+my $cols = 80;
+my $style = '';
+foreach $pair (@pairs)
+{
+	my ($name, $value) = split(/=/, $pair);
+	if($name eq 'MailHTML' && $value eq 'yes')
+	{
+		$MailHTML = $value;
+		$rows = 10;
+		$cols = 70;
+		$style = " style=\"visibility: hidden\"";
+	}
+
+	$value =~ tr/+/ /;
+	$value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
+	if($name eq 'phase')
+	{
+		#$value =~ s/"/\\"/g;
+		$value =~ s/\\n/\n/g;
+		$body .= $value;
+	}
+}
+
+if ($MailHTML eq 'yes')
+{
+	print <<EOM;
+<head>
+<script src=${JSDIR}richtext.js></script>
+</head>
+EOM
+}
+
+print <<EOM;
+<body>
+<form name=ComposeBodyForm action=spellchk method=POST>
+<input type=hidden name=MailHTML value="$MailHTML">
+<textarea id=MailBody name=MailBody rows=$rows cols=$cols wrap=PHYSICAL$style>
+$body
+</textarea>
+</form>
+EOM
+
+print STDERR $body;
+
+if ($MailHTML eq 'yes')
+{
+	print <<EOM;
+<div style="margin: 0px; padding: 0px; position: absolute; top:0px; left:0px; width=650; height=350;">
+<form name=myform onsubmit=\"return submitForm();\">
+<script>
+<!--
+function submitForm()
+{
+    updateRTE('rte1');
+    return false;
+}
+
+initRTE("images/", "drm/css/", "", "drm5/");
+//-->
+</script>
+
+<script>
+<!--
+var stg = document.getElementById('MailBody').value;
+writeRichText('rte1', stg, 640, 340, false, false);
+//-->
+</script>
+</form>
+</div>
+EOM
+}
+
+print <<EOM;
+</body>
+</html>
+EOM
+
+exit 0;

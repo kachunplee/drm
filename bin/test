@@ -1,0 +1,66 @@
+#! /usr/bin/perl
+
+use strict;
+
+my $user = 'feather';
+my $cmd = '/var/local/bin/accntquota -u ' . $user;
+
+my $value = system $cmd;
+
+my $storageuse = 0;
+my $maxsize = 10000;
+if (open (QDATA, "$cmd |"))
+{
+	my (@flds) = ();
+	while(<QDATA>)
+	{
+		chomp;
+		@flds = split(/\s+/, $_);
+		if ($flds[1] eq '/v0')
+		{
+			$storageuse = $flds[2];
+			$maxsize = $flds[3];
+			last;
+		}
+	}
+	close(QDATA);
+}
+
+my $storageleft = sprintf("%0.2f", (($maxsize - $storageuse) / 1000));
+$maxsize *= 1024;
+if ($storageuse > 0)
+{
+	$storageuse = int(($storageuse * 1024 * 100 / $maxsize) + 0.5);
+	$storageuse = int(($storageuse * 132 / 100) + 0.5);
+}
+my $storageremain = 132 - $storageuse;
+
+print <<EOM;
+Content-type: text/html
+
+<html>
+<body>
+<font face=Arial size=2 color=26589e>stoarge left: $storageleft MB</font><br>
+<table width=135 border=1 cellpedding=0 cellspacing=0 bordercolor=#000000>
+<tr height=7>
+EOM
+
+if ($storageuse > 0)
+{
+	print "<td bgcolor=#DA0505 width=$storageuse><img src=spacer_1pixel.gif height=1 widht=1></td>\n";
+}
+
+if ($storageremain > 0)
+{
+	print "<td bgcolor=#05D005 width=$storageremain><img src=spacer_1pixel.gif height=1 widht=1></td>\n";
+}
+
+print <<EOM;
+</tr>
+</td>
+</table>
+</body>
+</html>
+EOM
+
+exit 0;

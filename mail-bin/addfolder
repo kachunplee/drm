@@ -1,0 +1,85 @@
+#! /usr/bin/perl
+
+use lib qw(. ../perl5 /var/local/libdata/perl5);
+
+use STG_TPL;
+use CGI;
+use NGFILE;
+
+use strict;
+use drmdef;
+
+require "folder.ph";
+require "errmsg.ph";
+
+my $ADDFOLDER = 'addfolder.html';
+
+my $user = $ENV{REMOTE_USER};
+my $cgi = new CGI;
+my $folderpath;
+my $errmsg;
+
+eval
+{
+	if ($ARGV[0] eq '-A')
+	{
+		$folderpath = $ARGV[1];
+		print 'Content-type: text/html', "\n\n",
+			eval ${StgTemplate(GetFile($ADDFOLDER))};
+		return;
+	}
+	elsif ($ARGV[0] ne '-c')
+	{
+		$errmsg = "Illegal command.  Please click &quot;Back&quot; and try again.\n";
+		die $errmsg;
+	}
+
+	$folderpath = $cgi->param('folderpath');
+	my $foldername = $cgi->param('foldername');
+
+	($errmsg) = addfolder($user, $folderpath, $foldername, 0);
+	if ($errmsg ne '')
+	{
+		$errmsg .= " Please click &quot;Back&quot; and try again.\n";
+		die $errmsg;
+	}
+
+	$foldername = $folderpath . $foldername;
+	my ($userfolder, @folder) = readfolders($user);
+	my $folders = ($userfolder > 0) ?
+			("'" . join("', '", @folder) . "'") : '';
+
+#
+# Folder is not longer in a frame...
+# This still work because of opener.location.reload...
+# Should convert Folders into dynamic panel, so no reload is required.
+#
+	print <<EOM;
+Content-type: text/html
+
+<html>
+<head>
+<script language=javascript>
+<!--
+var newfolders = new Array($folders);
+opener.SetUserFolders($userfolder, newfolders);
+opener.fd_read['$foldername'] = 0;
+opener.fd_unread['$foldername'] = 0;
+
+opener.location.reload();
+window.close();
+//-->
+</script>
+</head>
+</html>
+EOM
+};
+
+if ($@)
+{
+	my $errmsg = $@;
+	PopupError($errmsg);
+	exit 1;
+}
+
+exit(0);

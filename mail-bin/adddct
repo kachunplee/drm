@@ -1,0 +1,97 @@
+#! /usr/bin/perl
+
+use Fcntl;
+use DB_File;
+
+use strict;
+use drmdef;
+
+print "Content-type: text/plain\n\n";
+
+my $userid = $ENV{REMOTE_USER};
+
+my $word = $ARGV[0];
+$word =~ s/^[^a-zA-Z0-9]+//;
+$word =~ s/[^a-zA-Z0-9].*$//;
+# only if first letter is capital
+$word = lc $word if $word =~ /^[A-Z][a-z0-9]*$/;
+
+if ($word eq '')
+{
+	print STDERR 'adddct: ', $userid, ' illegal word format', "\n"; 
+	print "Word not in valid format\n";
+	exit 1;
+}
+
+my $userDir = $MAILDIR . $userid;
+mkdir($userDir, 0775) if(! -d $userDir);
+
+my $dctdb = $userDir . '/aspell.db';
+my $dctf = $userDir . '/aspell.per';
+
+print STDERR 'dctdb=', $dctdb, ', dctf=', $dctf, "\n";
+
+my %DB;
+eval {
+   	my $r = tie %DB, 'DB_File', $dctdb, O_RDWR|O_CREAT;
+   	if (not $r) {
+		print STDERR $userid, ': Cannot update ', $dctdb, ": $!\n";
+		die "Cannot update DB\n";
+   	}
+
+	my $add = sprintf("%010d", time);
+	$DB{$word} = $add;
+	print STDERR 'adddct: ', $word, '<-', $add, "\n";
+
+	genDict(\%DB);
+	untie %DB;
+};
+
+if ($@)
+{
+	print STDERR 'adddct: unexpected error: ', $@, "\n";
+	print "Unexpected error.\n";
+	exit 1;
+}
+
+
+print 'OK: \'', $word, "' added to personal dictionary\n";
+exit 0;
+
+sub genDict
+{
+	my ($pdb) = @_;
+	if (not open (DICTF, "> $dctf.n"))
+	{
+	    print STDERR "Cannot create ", $dctf, ".n: $!\n";
+	}
+	else
+	{
+	    my $error = 0;
+
+	    my @keys = sort keys %$pdb;
+	    # out title
+	    if (not print DICTF 'personal_ws-1.1 en ',
+			scalar(@keys), "\n")
+	    {
+		print STDERR "write error: $!\n";
+		++$error;
+	    }
+
+	    foreach my $key (@keys)
+	    {
+		if (not print DICTF $key, "\n")
+		{
+			print STDERR "write error: $!\n";
+			++$error;
+		}
+	    }
+
+	    close DICTF || ++$error;
+	    if ($error == 0)
+	    {
+		rename $dctf, "$dctf.o";
+		rename "$dctf.n", $dctf;
+	    }
+	}
+}

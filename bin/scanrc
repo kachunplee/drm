@@ -1,0 +1,52 @@
+#! /usr/bin/perl
+
+use strict;
+use Fcntl;
+use DB_File;
+
+my $dir = "/var/local/mail";
+
+opendir(MAIL, $dir);
+my ($user, $filterfile, $found);
+while($user = readdir(MAIL))
+{
+	if ($user eq '.' || $user eq '..')
+	{
+		next;
+	}
+
+	my (@u) = getpwnam($user);
+	if (!defined($u[0]) || $u[0] ne $user)
+	{
+		next;
+	}
+
+	$filterfile = "$dir/$user/.procmailrc";
+	if (-f $filterfile)
+	{
+		unless (open (RC, "<$filterfile"))
+		{
+			print "$user: open $filterfile error\n";
+			next;
+		}
+
+		$found = 0;
+		while(<RC>)
+		{
+			if(/^*/)
+			{
+				if (/\|/)
+				{
+					$found = 1;
+				}
+			}
+		}
+		if ($found == 1)
+		{
+			print "$filterfile\n";
+		}
+	}
+}
+
+closedir(MAIL);
+exit;

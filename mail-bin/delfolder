@@ -1,0 +1,81 @@
+#! /usr/bin/perl
+
+use lib qw(. ../perl5 /var/local/libdata/perl5);
+
+use STG_TPL;
+use NGFILE;
+
+use strict;
+
+require "folder.ph";
+require "errmsg.ph";
+
+my $DEL_FOLDER_CONFIRM = 'delfolderconfirm.html';
+my $DEL_FOLDER_ERROR = 'delfoldererror.html';
+
+my $user = $ENV{REMOTE_USER};
+
+my $foldername = $ARGV[0];
+my $confirm = $ARGV[1];
+
+eval
+{
+	$foldername =~ tr/A-Z/a-z/;
+	if (f_is_buildin($foldername))
+	{
+		my $errmsg = "Cannot delete folder $foldername";
+		print 'Content-type: text/html', "\n\n",
+			eval ${StgTemplate(GetFile($DEL_FOLDER_ERROR))};
+		return;
+	}
+
+	my $dir = "/var/local/mail/$user";
+	mkdir($dir, 0775) if(! -d $dir);
+
+	if (! $confirm)
+	{
+		my $deltype = 'folder';
+		if ($foldername =~ /\/$/)
+		{
+			$deltype .= ' directory';
+		}
+		print 'Content-type: text/html', "\n\n",
+			eval ${StgTemplate(GetFile($DEL_FOLDER_CONFIRM))};
+	}
+	else
+	{
+		f_del_line("/var/local/mail/$user/Folders", $foldername);
+		$foldername =~ s/\/$//;
+		unlink("/var/local/mail/$user/mail/$foldername");
+		my ($userfolder, @folder) = readfolders($user);
+		my $folders = ($userfolder > 0) ?
+				("'" . join("', '", @folder) . "'") : '';
+#
+# Folder is not longer in a frame...
+# Should convert Folders into dynamic panel, so no reload is required.
+#
+		print <<EOM;
+Content-type: text/html
+
+<html>
+<head>
+<script language=javascript>
+<!--
+opener.location.reload();
+window.close();
+//-->
+</script>
+</head>
+</html>
+EOM
+	}
+};
+
+if ($@)
+{
+	my $errmsg = $@;
+	PopupError($errmsg);
+	exit 1;
+}
+
+exit(0);

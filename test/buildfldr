@@ -1,0 +1,44 @@
+#! /usr/bin/perl
+
+use strict;
+
+my $str = "1x/2x/3x/4x/";
+my @s = split(/\//, $str);
+print "length=", $#s, "\n";
+print "last=", $s[$#s], "\n";
+
+exit 0;
+
+my %folder_tree;
+
+my $folder = "fun/reward/coke";
+my @f = split(/\//, $folder);
+my $key = shift @f;
+$folder_tree{$key, @f} = 1;
+
+$folder = "fun/reward/sony";
+@f = split(/\//, $folder);
+$key = shift @f;
+$folder_tree{$key, @f} = 1;
+
+$folder = "save/family";
+@f = split(/\//, $folder);
+$key = shift @f;
+$folder_tree{$key, @f} = 1;
+
+$folder = "save/friend";
+@f = split(/\//, $folder);
+$key = shift @f;
+$folder_tree{$key, @f} = 1;
+
+foreach $key (keys %folder_tree)
+{
+	print $key, '=', $folder_tree{$key}, "\n";
+}
+
+
+print "save=", $folder_tree{"save"}, "\n";
+print "fun=", $folder_tree{"fun"}, "\n";
+print "fun/rewrad=", $folder_tree{"fun", "reward"}, "\n";
+
+exit 0;

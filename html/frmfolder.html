@@ -1,0 +1,83 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="/drm/css/drm.css" title="Style">
+<style type="text/css">
+<!--
+    a.cFolder:link, a.cFolder:active, a.cFolder:visited {color: #395BB5; text-decoration: none}
+    a.cFolder:hover {color: #F7D600}
+//-->
+</style>
+<script language=javascript src=/drm/js/floatmenu.js></script>
+<script language=javascript src=/drm/js/foldermenu.js></script>
+<script language=javascript src=/drm/js/drmwin.js></script>
+<script>
+<!--
+var frame = parent.parent;
+var foldercount = frame.foldercount;
+var maxcount = frame.maxcount;
+//-->
+</script>
+</head>
+<body onload="InitMenu()" link="#326698" vlink="#326698" alink="#326698" bgcolor="#FFFFFF"> 
+<table border="0" cellpadding="0" cellspacing="0" width=148>
+<tr>
+<td colspan="2" bgcolor="#EAEFF8" height="25">
+&nbsp;<a href="javascript:NewFolder()" title="Add New Folder"><img src="/drm/img/addfolder.gif" border="0" title="Add New Folder" width="31" height="18"></a><a href="javascript:AddFolderDir()" title="Add New Folder Dir"><img src="/drm/img/addfolderdir.gif" border="0" title="Add New Folder Dir" width="29" height="18"></a><a href="javascript:EmptyTrash()" title="Empty Trash"><img border="0" src="/drm/img/emptytrash.gif" title="Empty Trash" width="29" height=18></a><a href="javascript:EmptyInBox()" title="Empty In Box"><img border="0" src="/drm/img/emptyinbox.gif" title="Empty In Box" width="31" height=18></a></td>
+</tr>
+</table>
+<p>
+<font face="Verdana, Arial, Helvetica" size=1 color=#719EDD>
+<script>
+<!--
+	for(i = 0; i < frame.BFolders.length; i++)
+		outFolder(frame.BFolders[i], 'B', '+');
+
+	for(i = 0; i < frame.Folders.length; i++)
+		outFolder(frame.Folders[i], '', FDiropens[i]);
+
+	SetFolderImg(top.currentFolder);
+
+	OutStorageBar();
+//-->
+</script>
+</font>
+<script>
+<!--
+	var menuName = "BFolder";
+	BeginMenu(menuName, 90, "#6A97D9");
+		MenuItem(menuName, "Open Folder", "Open Folder",
+			"javascript:OpenFolder()");
+		MenuItem(menuName, "Transfer Selected List", "Xfer Selected",
+			"javascript:TransferSelected()");
+		MenuItem(menuName, "Transfer Preview Mail", "Xfer Preview",
+			"javascript:TransferPreview()");
+	EndMenu();
+
+	var menuName = "Folder";
+	BeginMenu(menuName, 90, "#6A97D9");
+		MenuItem(menuName, "Open Folder", "Open Folder",
+			"javascript:OpenFolder()");
+		MenuItem(menuName, "Transfer Selected List", "Xfer Selected",
+			"javascript:TransferSelected()");
+		MenuItem(menuName, "Transfer Preview Mail", "Xfer Preview",
+			"javascript:TransferPreview()");
+		MenuItem(menuName, "Rename Folder", "Rename...",
+			"javascript:RenameFolder()");
+		MenuItem(menuName, "Delete Folder", "Delete...",
+			"javascript:DeleteFolder()");
+	EndMenu();
+	document.close();
+
+	var menuName = "FolderDir";
+	BeginMenu(menuName, 90, "#6A97D9");
+		MenuItem(menuName, "Add Dir", "Add Dir...",
+			"javascript:AddFolderDir()");
+		MenuItem(menuName, "Add Folder", "Add Folder...",
+			"javascript:AddFolder()");
+		MenuItem(menuName, "Delete Dir", "Delete Dir...",
+			"javascript:DeleteFolderDir()");
+	EndMenu();
+//-->
+</script>
+</body>
+</html>

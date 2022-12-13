@@ -1,0 +1,103 @@
+#!/usr/bin/perl
+
+use drmdef;
+use FileHandle;
+use IPC::Open2;
+
+$| = 1;
+
+	print "Content-type: text/html\n\n";
+
+	read(STDIN, $inbuf, $ENV{'CONTENT_LENGTH'});
+
+	#
+	# Check if java script enable
+	#
+
+	@pairs = split(/&/, $inbuf);
+	%form = ();
+	foreach $pair (@pairs)
+	{
+		($name, $value) = split(/=/, $pair);
+		$value =~ tr/+/ /;
+		$value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
+		$form{$name} = $value;
+	}
+
+
+print <<EOM;	#------------------------------------------
+<html>
+<head>
+
+<script language="JavaScript">
+<!--
+function Done()
+{
+	if(window.document.correction.Suggestions.selectedIndex != -1)
+	    window.opener.document.SpellListForm.elements[$form{'Field'}].value =
+	    	window.document.correction.Suggestions.options[
+			window.document.correction.Suggestions.selectedIndex].text;
+	window.opener.change=true;
+	window.close();
+}
+
+function Cancel()
+{
+	window.close();
+}
+
+//-->
+</script>
+<title>Direct Read Mail (tm) - Spell Check</title>
+</head>
+
+<body link="#326698" vlink="#326698" alink="#326698" bgcolor="#EAEFF8" marginheight="0" marginwidth="0" topmargin="0" leftmargin="0">
+  <div align="left">
+    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="280">
+	<form method=POST name=correction>
+      <tr>
+       <td bgcolor="#3173CE"><img border="0" src="${IMGDIR}spacer_transparent.gif" width="134" height="29"></td>
+      </tr>
+      <tr>
+        <td bgcolor="#EAEFF8">
+    <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+      </tr>
+      <tr>
+        <td bgcolor="#EAEFF8">
+      <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+      </tr>
+      <tr>
+        <td bgcolor="#EAEFF8">
+      <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+      </tr>
+      <tr>
+        <td bgcolor="#EAEFF8">
+      <p align="center"><font face="Arial" size="2" color="#396BB5"><b>Word:
+       </b> $form{'Word'}</font></p>
+	<p align="center">
+	<center>
+	<select name=Suggestions size=6>
+	$form{'Suggestions'}
+	</select>
+	<p>
+	<a href=javascript:Done()>
+	<img src=${IMGDIR}bluesave.gif border=0 width=82 height=22></a>
+	<a href=javascript:Cancel()>
+	<img src=${IMGDIR}bluecancel.gif border=0 width=82 height=22></a></td>
+	</form>
+      </tr>
+      <tr>
+        <td bgcolor="#EAEFF8">
+      <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+      </tr>
+      <tr>
+        <td bgcolor="#EAEFF8">
+      <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>
+EOM
+	exit (0);
+

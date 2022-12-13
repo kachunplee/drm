@@ -1,0 +1,1236 @@
+sr/include/time.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h
+urllib.o: ../src/urllib.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h ../include/def.h \
+ /usr/include/assert.h /usr/include/stdlib.h /usr/include/ctype.h \
+ /usr/include/runetype.h /usr/include/unistd.h \
+ /usr/include/sys/types.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/types.h /usr/include/machine/endian.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h ../include/conf.h \
+ ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h /usr/include/time.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h
+inlib.o: ../src/inlib.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/stdio.h \
+ /usr/include/string.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ /usr/include/unistd.h /usr/include/sys/unistd.h \
+ /usr/include/sys/_posix.h ../include/conf.h ../include/zio.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h /usr/include/g++/fstream.h ../include/zstg.h \
+ /usr/include/g++/string /usr/include/g++/std/bastring.h \
+ /usr/include/g++/cstddef /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/g++/cstring \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc /usr/include/g++/strstream.h \
+ /usr/include/g++/strfile.h ../include/zregex.h /usr/include/regex.h \
+ ../include/htmllib.h ../include/urllib.h ../include/inlib.h \
+ /usr/include/time.h ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h
+zio.o: ../src/zio.cpp ../include/def.h /usr/include/assert.h \
+ /usr/include/sys/cdefs.h /usr/include/stdlib.h \
+ /usr/include/machine/ansi.h /usr/include/ctype.h \
+ /usr/include/runetype.h /usr/include/unistd.h \
+ /usr/include/sys/types.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/types.h /usr/include/machine/endian.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h ../include/conf.h \
+ ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/string.h \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc /usr/include/g++/strstream.h \
+ /usr/include/g++/strfile.h ../include/zregex.h /usr/include/regex.h \
+ ../include/htmllib.h ../include/urllib.h ../include/inlib.h \
+ /usr/include/time.h ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h
+zstg.o: ../src/zstg.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/stddef.h /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/ctype.h /usr/include/runetype.h \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/_G_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/stdlib.h /usr/include/assert.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc /usr/include/g++/strstream.h \
+ /usr/include/g++/strfile.h ../include/zregex.h \
+ /usr/include/sys/types.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/types.h /usr/include/machine/endian.h \
+ /usr/include/regex.h
+popbox.o: ../src/popbox.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/mman.h \
+ /usr/include/sys/_posix.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/fcntl.h \
+ /usr/include/sys/uio.h /usr/include/sys/errno.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h /usr/include/pwd.h ../include/def.h \
+ /usr/include/assert.h /usr/include/stdlib.h /usr/include/ctype.h \
+ /usr/include/runetype.h ../include/conf.h ../include/zio.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h /usr/include/g++/fstream.h ../include/zstg.h \
+ /usr/include/g++/string /usr/include/g++/std/bastring.h \
+ /usr/include/g++/cstddef /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/g++/cstring \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc /usr/include/g++/strstream.h \
+ /usr/include/g++/strfile.h ../include/zregex.h /usr/include/regex.h \
+ ../include/htmllib.h ../include/urllib.h ../include/inlib.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/popbox.h ../include/mailbox.h
+version.o: ../src/version.cpp
+status.o: ../src/status.cpp /usr/include/stdarg.h ../include/def.h \
+ /usr/include/assert.h /usr/include/sys/cdefs.h /usr/include/stdlib.h \
+ /usr/include/machine/ansi.h /usr/include/ctype.h \
+ /usr/include/runetype.h /usr/include/unistd.h \
+ /usr/include/sys/types.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/types.h /usr/include/machine/endian.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h ../include/conf.h \
+ ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/string.h \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc /usr/include/g++/strstream.h \
+ /usr/include/g++/strfile.h ../include/zregex.h /usr/include/regex.h \
+ ../include/htmllib.h ../include/urllib.h ../include/inlib.h \
+ /usr/include/time.h ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/status.h
+dmsg.o: ../src/dmsg.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/stdio.h \
+ /usr/include/stdarg.h
+maillist.o: ../src/maillist.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailbox.h ../include/maillist.h ../zmime/mime_priv.h \
+ ../zmime/mime.h ../zmime/mimemisc_priv.h ../zmime/mimemisc.h
+mailmsg.o: ../src/mailmsg.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailbox.h ../include/mailmsg.h
+mailto.o: ../src/mailto.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailsettings.h ../include/mailto.h
+mailsettings.o: ../src/mailsettings.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h ../include/def.h \
+ /usr/include/assert.h /usr/include/stdlib.h /usr/include/ctype.h \
+ /usr/include/runetype.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h ../include/conf.h ../include/zio.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h /usr/include/g++/fstream.h ../include/zstg.h \
+ /usr/include/g++/string /usr/include/g++/std/bastring.h \
+ /usr/include/g++/cstddef /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/g++/cstring \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc /usr/include/g++/strstream.h \
+ /usr/include/g++/strfile.h ../include/zregex.h /usr/include/regex.h \
+ ../include/htmllib.h ../include/urllib.h ../include/inlib.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/mailsettings.h
+in.o: ../src/in.cpp /usr/include/unistd.h /usr/include/sys/cdefs.h \
+ /usr/include/sys/types.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/unistd.h \
+ /usr/include/sys/_posix.h /usr/include/string.h /usr/include/pwd.h \
+ /usr/include/grp.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h /usr/include/time.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/mailopt.h ../include/mailto.h ../include/maillist.h \
+ ../include/mailmsg.h ../include/mailsettings.h ../include/inbox.h \
+ ../include/mailbox.h
+maillist.o: ../src/maillist.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailbox.h ../include/maillist.h ../zmime/mime_priv.h \
+ ../zmime/mime.h ../zmime/mimemisc_priv.h ../zmime/mimemisc.h
+mailmsg.o: ../src/mailmsg.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailbox.h ../include/mailmsg.h
+mailto.o: ../src/mailto.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailsettings.h ../include/mailto.h
+mailsettings.o: ../src/mailsettings.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h ../include/def.h \
+ /usr/include/assert.h /usr/include/stdlib.h /usr/include/ctype.h \
+ /usr/include/runetype.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h ../include/conf.h ../include/zio.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h /usr/include/g++/fstream.h ../include/zstg.h \
+ /usr/include/g++/string /usr/include/g++/std/bastring.h \
+ /usr/include/g++/cstddef /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/g++/cstring \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc /usr/include/g++/strstream.h \
+ /usr/include/g++/strfile.h ../include/zregex.h /usr/include/regex.h \
+ ../include/htmllib.h ../include/urllib.h ../include/inlib.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/mailsettings.h
+out.o: ../src/out.cpp /usr/include/unistd.h /usr/include/sys/cdefs.h \
+ /usr/include/sys/types.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/unistd.h \
+ /usr/include/sys/_posix.h /usr/include/string.h /usr/include/pwd.h \
+ /usr/include/grp.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h /usr/include/time.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/mailopt.h ../include/mailto.h ../include/maillist.h \
+ ../include/mailmsg.h ../include/inbox.h ../include/mailbox.h
+maillist.o: ../src/maillist.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailbox.h ../include/maillist.h ../zmime/mime_priv.h \
+ ../zmime/mime.h ../zmime/mimemisc_priv.h ../zmime/mimemisc.h
+mailmsg.o: ../src/mailmsg.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailbox.h ../include/mailmsg.h
+mailto.o: ../src/mailto.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailsettings.h ../include/mailto.h
+mailsettings.o: ../src/mailsettings.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h ../include/def.h \
+ /usr/include/assert.h /usr/include/stdlib.h /usr/include/ctype.h \
+ /usr/include/runetype.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h ../include/conf.h ../include/zio.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h /usr/include/g++/fstream.h ../include/zstg.h \
+ /usr/include/g++/string /usr/include/g++/std/bastring.h \
+ /usr/include/g++/cstddef /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/g++/cstring \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc /usr/include/g++/strstream.h \
+ /usr/include/g++/strfile.h ../include/zregex.h /usr/include/regex.h \
+ ../include/htmllib.h ../include/urllib.h ../include/inlib.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/mailsettings.h
+save.o: ../src/save.cpp /usr/include/unistd.h /usr/include/sys/cdefs.h \
+ /usr/include/sys/types.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/unistd.h \
+ /usr/include/sys/_posix.h /usr/include/string.h /usr/include/pwd.h \
+ /usr/include/grp.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h /usr/include/time.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/mailopt.h ../include/mailto.h ../include/maillist.h \
+ ../include/mailmsg.h ../include/inbox.h ../include/mailbox.h
+maillist.o: ../src/maillist.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailbox.h ../include/maillist.h ../zmime/mime_priv.h \
+ ../zmime/mime.h ../zmime/mimemisc_priv.h ../zmime/mimemisc.h
+mailmsg.o: ../src/mailmsg.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailbox.h ../include/mailmsg.h
+mailto.o: ../src/mailto.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailsettings.h ../include/mailto.h
+mailsettings.o: ../src/mailsettings.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h ../include/def.h \
+ /usr/include/assert.h /usr/include/stdlib.h /usr/include/ctype.h \
+ /usr/include/runetype.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h ../include/conf.h ../include/zio.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h /usr/include/g++/fstream.h ../include/zstg.h \
+ /usr/include/g++/string /usr/include/g++/std/bastring.h \
+ /usr/include/g++/cstddef /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/g++/cstring \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc /usr/include/g++/strstream.h \
+ /usr/include/g++/strfile.h ../include/zregex.h /usr/include/regex.h \
+ ../include/htmllib.h ../include/urllib.h ../include/inlib.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/mailsettings.h
+trash.o: ../src/trash.cpp /usr/include/unistd.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/ansi.h \
+ /usr/include/machine/types.h /usr/include/machine/endian.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h \
+ /usr/include/string.h /usr/include/pwd.h /usr/include/grp.h \
+ ../include/def.h /usr/include/assert.h /usr/include/stdlib.h \
+ /usr/include/ctype.h /usr/include/runetype.h ../include/conf.h \
+ ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h /usr/include/time.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/mailopt.h ../include/mailto.h ../include/maillist.h \
+ ../include/mailmsg.h ../include/inbox.h ../include/mailbox.h
+cpop3.o: ../inet/cpop3.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h \
+ /usr/include/stdlib.h /usr/include/stdio.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/stddef.h /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/ctype.h /usr/include/runetype.h \
+ /usr/include/g++/cstring /usr/include/string.h \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/_G_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/assert.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ ../include/dmsg.h ../inet/cpop3.h ../inet/clienttcp.h \
+ ../inet/inettcp.h /usr/include/netinet/in.h \
+ /usr/include/netinet6/in6.h /usr/include/sys/queue.h \
+ ../inet/csocket.h /usr/include/sys/errno.h /usr/include/sys/socket.h \
+ /usr/include/errno.h /usr/include/strings.h /usr/include/fcntl.h
+clienttcp.o: ../inet/clienttcp.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h \
+ /usr/include/stdio.h /usr/include/stdlib.h /usr/include/stdarg.h \
+ /usr/include/time.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/string.h ../include/dmsg.h ../inet/cinet.h \
+ ../inet/inettcp.h /usr/include/netinet/in.h \
+ /usr/include/netinet6/in6.h /usr/include/sys/queue.h \
+ ../inet/csocket.h /usr/include/sys/errno.h /usr/include/sys/socket.h \
+ /usr/include/errno.h /usr/include/strings.h /usr/include/fcntl.h \
+ ../inet/clienttcp.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/ctype.h /usr/include/runetype.h /usr/include/g++/cstring \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/assert.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc
+inettcp.o: ../inet/inettcp.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/time.h \
+ /usr/include/time.h /usr/include/sys/_posix.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/string.h /usr/include/stdio.h \
+ ../include/dmsg.h ../inet/inettcp.h /usr/include/netinet/in.h \
+ /usr/include/netinet6/in6.h /usr/include/sys/queue.h \
+ ../inet/csocket.h /usr/include/sys/errno.h /usr/include/sys/socket.h \
+ /usr/include/errno.h /usr/include/strings.h /usr/include/fcntl.h
+cinet.o: ../inet/cinet.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/socket.h \
+ /usr/include/netinet/in.h /usr/include/netinet6/in6.h \
+ /usr/include/sys/queue.h /usr/include/arpa/inet.h \
+ /usr/include/netdb.h ../inet/cinet.h
+popacc.o: ../src/popacc.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/pwd.h /usr/include/grp.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/stdarg.h /usr/include/stdio.h \
+ /usr/include/errno.h /usr/include/string.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h ../include/conf.h ../include/status.h \
+ ../include/popacc.h ../inet/cpop3.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/ctype.h /usr/include/runetype.h /usr/include/g++/cstring \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/stdlib.h \
+ /usr/include/assert.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc ../inet/clienttcp.h \
+ ../inet/inettcp.h /usr/include/netinet/in.h \
+ /usr/include/netinet6/in6.h /usr/include/sys/queue.h \
+ ../inet/csocket.h /usr/include/sys/errno.h /usr/include/sys/socket.h \
+ /usr/include/strings.h /usr/include/fcntl.h
+maillist.o: ../src/maillist.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailbox.h ../include/maillist.h ../zmime/mime_priv.h \
+ ../zmime/mime.h ../zmime/mimemisc_priv.h ../zmime/mimemisc.h
+mailmsg.o: ../src/mailmsg.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailbox.h ../include/mailmsg.h
+mailto.o: ../src/mailto.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailsettings.h ../include/mailto.h
+mailsettings.o: ../src/mailsettings.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h ../include/def.h \
+ /usr/include/assert.h /usr/include/stdlib.h /usr/include/ctype.h \
+ /usr/include/runetype.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h ../include/conf.h ../include/zio.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h /usr/include/g++/fstream.h ../include/zstg.h \
+ /usr/include/g++/string /usr/include/g++/std/bastring.h \
+ /usr/include/g++/cstddef /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/g++/cstring \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc /usr/include/g++/strstream.h \
+ /usr/include/g++/strfile.h ../include/zregex.h /usr/include/regex.h \
+ ../include/htmllib.h ../include/urllib.h ../include/inlib.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/mailsettings.h
+pop.o: ../src/pop.cpp /usr/include/unistd.h /usr/include/sys/cdefs.h \
+ /usr/include/sys/types.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/unistd.h \
+ /usr/include/sys/_posix.h /usr/include/string.h /usr/include/pwd.h \
+ /usr/include/grp.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h /usr/include/time.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/mailopt.h ../include/mailto.h ../include/maillist.h \
+ ../include/mailmsg.h ../include/inbox.h ../include/mailbox.h \
+ ../include/popbox.h ../include/popacc.h ../include/status.h \
+ ../inet/cpop3.h ../inet/clienttcp.h ../inet/inettcp.h \
+ /usr/include/netinet/in.h /usr/include/netinet6/in6.h \
+ /usr/include/sys/queue.h ../inet/csocket.h /usr/include/sys/errno.h \
+ /usr/include/sys/socket.h /usr/include/errno.h /usr/include/strings.h \
+ /usr/include/fcntl.h
+cgi.o: ../src/cgi.cpp ../include/def.h /usr/include/assert.h \
+ /usr/include/sys/cdefs.h /usr/include/stdlib.h \
+ /usr/include/machine/ansi.h /usr/include/ctype.h \
+ /usr/include/runetype.h /usr/include/unistd.h \
+ /usr/include/sys/types.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/types.h /usr/include/machine/endian.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h ../include/conf.h \
+ ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/string.h \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc /usr/include/g++/strstream.h \
+ /usr/include/g++/strfile.h ../include/zregex.h /usr/include/regex.h \
+ ../include/htmllib.h ../include/urllib.h ../include/inlib.h \
+ /usr/include/time.h ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ /usr/include/stdio.h ../include/cgi.h ../include/gdt.h \
+ ../include/gdt-sys.h ../include/httpbox.h
+httpbox.o: ../src/httpbox.cpp /usr/include/stdio.h \
+ /usr/include/sys/cdefs.h /usr/include/machine/ansi.h \
+ /usr/include/stdlib.h ../include/httpbox.h
+mailmsg.o: ../src/mailmsg.cpp /usr/include/string.h \
+ /usr/include/machine/ansi.h /usr/include/sys/cdefs.h \
+ /usr/include/stdio.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/sys/stat.h \
+ /usr/include/sys/time.h /usr/include/time.h /usr/include/sys/_posix.h \
+ /usr/include/fcntl.h /usr/include/sys/uio.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/dirent.h \
+ /usr/include/sys/dirent.h ../include/def.h /usr/include/assert.h \
+ /usr/include/stdlib.h /usr/include/ctype.h /usr/include/runetype.h \
+ ../include/conf.h ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/stddef.h \
+ /usr/include/g++/fstream.h ../include/zstg.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ /usr/include/g++/strstream.h /usr/include/g++/strfile.h \
+ ../include/zregex.h /usr/include/regex.h ../include/htmllib.h \
+ ../include/urllib.h ../include/inlib.h ../include/zmime.h \
+ /usr/include/g++/vector /usr/include/g++/stl_algobase.h \
+ /usr/include/g++/stl_pair.h /usr/include/g++/type_traits.h \
+ /usr/include/limits.h /usr/include/machine/limits.h \
+ /usr/include/sys/syslimits.h /usr/include/g++/new.h \
+ /usr/include/g++/new /usr/include/g++/exception \
+ /usr/include/g++/stl_construct.h /usr/include/g++/stl_uninitialized.h \
+ /usr/include/g++/stl_vector.h /usr/include/g++/stl_bvector.h \
+ /usr/include/g++/map /usr/include/g++/stl_tree.h \
+ /usr/include/g++/stl_function.h /usr/include/g++/stl_map.h \
+ /usr/include/g++/stl_multimap.h ../include/mailopt.h \
+ ../include/mailbox.h ../include/mailmsg.h
+mailpost.o: ../src/mailpost.cpp /usr/include/unistd.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/types.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/ansi.h \
+ /usr/include/machine/types.h /usr/include/machine/endian.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h \
+ /usr/include/string.h /usr/include/sys/stat.h /usr/include/sys/time.h \
+ /usr/include/time.h /usr/include/sys/errno.h /usr/include/pwd.h \
+ /usr/include/grp.h /usr/include/fcntl.h ../include/def.h \
+ /usr/include/assert.h /usr/include/stdlib.h /usr/include/ctype.h \
+ /usr/include/runetype.h ../include/conf.h ../include/zio.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h /usr/include/g++/fstream.h ../include/zstg.h \
+ /usr/include/g++/string /usr/include/g++/std/bastring.h \
+ /usr/include/g++/cstddef /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/g++/cstring \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc /usr/include/g++/strstream.h \
+ /usr/include/g++/strfile.h ../include/zregex.h /usr/include/regex.h \
+ ../include/htmllib.h ../include/urllib.h ../include/inlib.h \
+ ../include/zmime.h /usr/include/g++/vector \
+ /usr/include/g++/stl_algobase.h /usr/include/g++/stl_pair.h \
+ /usr/include/g++/type_traits.h /usr/include/limits.h \
+ /usr/include/machine/limits.h /usr/include/sys/syslimits.h \
+ /usr/include/g++/new.h /usr/include/g++/new \
+ /usr/include/g++/exception /usr/include/g++/stl_construct.h \
+ /usr/include/g++/stl_uninitialized.h /usr/include/g++/stl_vector.h \
+ /usr/include/g++/stl_bvector.h /usr/include/g++/map \
+ /usr/include/g++/stl_tree.h /usr/include/g++/stl_function.h \
+ /usr/include/g++/stl_map.h /usr/include/g++/stl_multimap.h \
+ ../include/mailopt.h ../include/inbox.h ../include/mailbox.h \
+ ../include/cgi.h ../include/gdt.h /usr/include/stdio.h \
+ ../include/gdt-sys.h
+cgi.o: ../src/cgi.cpp ../include/def.h /usr/include/assert.h \
+ /usr/include/sys/cdefs.h /usr/include/stdlib.h \
+ /usr/include/machine/ansi.h /usr/include/ctype.h \
+ /usr/include/runetype.h /usr/include/unistd.h \
+ /usr/include/sys/types.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/types.h /usr/include/machine/endian.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h ../include/conf.h \
+ ../include/zio.h /usr/include/g++/iostream.h \
+ /usr/include/g++/streambuf.h /usr/include/g++/libio.h \
+ /usr/include/g++/_G_config.h /usr/include/st

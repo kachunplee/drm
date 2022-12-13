@@ -1,0 +1,22 @@
+#! /usr/bin/perl
+
+use CGI qw(:standard);
+use strict;
+
+use drmdef;
+
+$| = 1;
+print header;
+
+print <<EOM;
+<html>
+<body>
+<p align=right>
+&nbsp;<br>
+<a href="javascript:parent.DRMPrnMsgBody.focus(); parent.DRMPrnMsgBody.print()"><img border=0 src=${IMGDIR}prnnow.gif width=89 height=22></a>&nbsp;&nbsp;<a href="javascript:parent.close()"><img border=0 src=${IMGDIR}blueclose.gif width=82 height=22></a>&nbsp;&nbsp;&nbsp;&nbsp;
+</p>
+</body>
+</html>
+EOM
+
+exit 0;

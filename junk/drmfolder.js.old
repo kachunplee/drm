@@ -1,0 +1,1003 @@
+// revised: 2008-01-06
+
+var DRMFolderWin = null;
+
+var openedMenu = null;
+var nameItem;
+
+var FolderImg;
+var FolderDirs = new Array();
+var FolderOpens = new Array();
+
+//
+//
+//
+function menuX (x, width)
+{
+	return x + (bIE ? 0 : width/2);
+}
+
+function menuY (y, height)
+{
+	return (y + height/2);
+}
+
+//
+//
+function BlankPreview ()
+{
+	if (!previewframe)
+		return;
+	setPrevwTitle('', '', '', '', null) 
+	drmPreview.location.href = '/drm5/drmprevw.asp';
+}
+
+function folderMouseOver (target, folder)
+{
+	if (!drmDrag.isDrag())
+		return;
+
+	if (currentFolder != folder)
+	{
+		target.style.cursor = 'crosshair';
+
+		var img = target.getElementsByTagName('img');
+		if (img && img[0])
+		     img[0].src = '/drm/img/transfericon.gif';
+	}
+	else
+	{
+		target.style.cursor = 'no-drop';
+	}
+		
+}
+
+function folderDefault (target, folder)
+{
+	target.style.cursor = 'pointer';
+	var imgs = target.getElementsByTagName('img');
+	var img = (folder == currentFolder)
+		? '/drm/img/folderopen.gif'
+		: '/drm/img/folderclosed.gif';
+	var imgnow = imgs[0].src;
+	if (imgnow.substr(imgnow.length-img.length) != img)
+		imgs[0].src = img;
+}
+
+function folderMouseOut (target, folder)
+{
+	folderDefault(target, folder);
+}
+
+function folderMouseUp (target, folder)
+{
+	folderDefault(target, folder);
+	drmDrag.isDrop(target, folder);
+}
+
+function imgMouseOver (target, folder)
+{
+	if (drmDrag.isDrag())
+	{
+		folderMouseOver(target, folder);
+		return false;
+	}
+
+	var obj = document.images['iMenuFolder_' + folder];
+	if (!obj) obj = document.images['iMenuBFolder_' + folder];
+
+	if (obj)
+		showMenu(obj);
+	
+	return false;
+}
+
+//
+//
+//
+function OutFolder (folder, buildin)
+{
+	var flen = folder.length;
+
+	var bOpen = true;
+
+ 	if (folder.charAt(flen-1) == '+')
+	{
+		folder = folder.replace(/\+$/, '');
+		bOpen = true;
+		flen--;
+	}
+ 	else if (folder.charAt(flen-1) == '-')
+	{
+		folder = folder.replace(/\-$/, '');
+		bOpen = false;
+		flen--;
+	}
+
+	var fdisplay = '';
+	if (folder.charAt(flen-1) == '\/')
+	{
+	    // It's a direcotry, check
+
+	    fs = folder.split('\/');
+	    if (fs[(fs.length-1)] == '')
+		fs.pop();
+
+	    if(!bOpen)
+		fdisplay = 'display:none;';
+
+	    var ispaces = '';
+	    if (fs.length == 1)
+		foldername = fs[0];
+	    else
+	    {
+		var i;
+		for(i = 1; i < fs.length; i++)
+			ispaces += "&nbsp;&nbsp";
+		foldername = fs[(fs.length-1)];
+	    }
+
+	    document.writeln(
+		'<div id="div_', folder, '" style="height:18px;', fdisplay,
+		'"><span class=cFolder',
+		' onmouseup="folderDMouseUp(this,\'', folder, '\')"',
+		' onmouseover="folderDMouseOver(this, \'', folder, '\')"',
+		' onmouseout="folderDMouseOut(this, \'', folder, '\')">',
+		ispaces, '<img id=iMenuFolderDir_', folder,
+		' onmouseover="imgDMouseOver(this, \'', folder, '\')"',
+		' name=iMenuFolderDir_', folder,
+		' src=/drm/img/folderdiropen.gif border=0 width=21 height=17>',
+		'&nbsp;',
+		' <a id="fstat_', folder, '" alt="Check ', folder, ' Folder">',
+		'&nbsp;',
+		foldername.substr(0,1).toUpperCase(), foldername.substr(1),
+		'</a></span><br>',
+		'<img src=/drm/img/spacer_1pixel.gif border=0 height=3 ',
+		'width=1><br></div>'
+	    );
+
+	    return;
+	}
+
+	foldername = folder;
+	fs = folder.split("/");
+
+	var ispaces = '';
+	var imgsrc = 'folderclosed.gif';
+	for(var i = 1; i < fs.length; i++)
+	{
+		ispaces += '&nbsp;&nbsp;';
+		foldername = fs[(fs.length-1)];
+	}
+
+	flen = fs.length;
+	for(; FolderDirs.length > 0; )
+	{
+		pFolder = FolderDirs[FolderDirs.length-1];
+		fs = pFolder.split("/");
+		if (flen == fs.length)
+			break;
+
+		FolderDirs.pop();
+		FolderOpens.pop();
+	}
+
+	if (FolderDirs.length == 0)
+		bOpen = true;
+
+	if (!bOpen)
+		fdisplay = 'display:none;';
+
+	document.writeln(
+		'<div id="div_', folder, '" style="height:18px;', fdisplay,
+		'"><span class=cFolder',
+		' onmouseup="folderMouseUp(this,\'', folder, '\')"',
+		' onmouseover="folderMouseOver(this, \'', folder, '\')"',
+		' onmouseout="folderMouseOut(this, \'', folder, '\')">',
+		ispaces, '<img id=iMenu', buildin, 'Folder_', folder,
+		' onmouseover="imgDMouseOver(this, \'', folder, '\')"',
+		' name=iMenu', buildin, 'Folder_', folder,
+		' src=/drm/img/', imgsrc, ' border=0 width=21 height=17>',
+		'&nbsp;',
+		' <a id="fstat_', folder, '" alt="Check ', folder, ' Folder"',
+		' title="', frame.fd_read[folder], ' read ',
+		frame.fd_unread[folder], ' unread"',
+		' href="javascript:OpenFolder(\'', folder, '\')">&nbsp;',
+		foldername.substr(0,1).toUpperCase(), foldername.substr(1),
+		'</a></span><br>',
+		'<img src=/drm/img/spacer_1pixel.gif border=0 height=3 ',
+		'width=1><br></div>'
+	);
+}
+
+function OutFolderX (folder, buildin)
+{
+	var flen = folder.length;
+	var dlen = FolderDirs.length;
+	var fs = new Array();
+	var foldername;
+	var fdisplay = '';
+	var pfolder;
+
+	var bOpen = false;
+	if (FolderOpens.length > 0)
+	{
+		if (FolderOpens[dlen - 1] == 1)
+		{
+			bOpen = true;
+		}
+	}
+
+	if (folder.charAt(flen-2) == '\/')
+	{
+ 		if (folder.charAt(flen-1) == '+')
+		{
+			folder = folder.replace(/\+$/, '');
+			bOpen = true;
+			flen--;
+		}
+ 		else if (folder.charAt(flen-1) == '-')
+		{
+			folder = folder.replace(/\-$/, '');
+			bOpen = false;
+			flen--;
+		}
+	}
+	else if (folder.charAt(flen-1) == '\/')
+	{
+		bOpen = false;
+	}
+	
+	if (folder.charAt(flen-1) == '\/')
+	{
+	    // It's a direcotry, check
+
+	    fs = folder.split('\/');
+	    if (fs[(fs.length-1)] == '')
+		fs.pop();
+
+	    if(!bOpen && fs.length > 1)
+		fdisplay = 'display:none;';
+
+	    var ispaces = '';
+	    if (fs.length == 1)
+	    {
+		foldername = fs[0];
+		if (dlen >= 1)
+		{
+			FolderDirs.pop();
+			FolderOpens.pop();
+		}
+	    }
+	    else
+	    {
+		var i;
+		for(i = 1; i < fs.length; i++)
+			ispaces += "&nbsp;&nbsp";
+		foldername = fs[(fs.length-1)];
+		flen = fs.length;
+
+		// more.. check to see if need to pop pervious levels
+		for(; FolderDirs.length > 0;)
+		{
+			pfolder = FolderDirs[FolderDirs.length-1];
+			fs = pfolder.split('\/');
+			if (flen > (fs.length - 1))
+				break;
+
+			if (FolderDirs.length == 0)
+				break;
+
+			FolderDirs.pop();
+			FolderOpens.pop();
+		}
+	    }
+	    FolderDirs.push(folder);
+	    FolderOpens.push(bOpen?1:0);
+	    dlen = FolderDirs.length;
+
+	    document.writeln(
+		'<div id="div_', folder, '" style="height:18px;', fdisplay,
+		'"><span class=cFolder',
+		' onmouseup="folderDMouseUp(this,\'', folder, '\')"',
+		' onmouseover="folderDMouseOver(this, \'', folder, '\')"',
+		' onmouseout="folderDMouseOut(this, \'', folder, '\')">',
+		ispaces, '<img id=iMenuFolderDir_', folder,
+		' onmouseover="imgDMouseOver(this, \'', folder, '\')"',
+		' name=iMenuFolderDir_', folder,
+		' src=/drm/img/folderdiropen.gif border=0 width=21 height=17>',
+		'&nbsp;',
+		' <a id="fstat_', folder, '" alt="Check ', folder, ' Folder">',
+		'&nbsp;',
+		foldername.substr(0,1).toUpperCase(), foldername.substr(1),
+		'</a></span><br>',
+		'<img src=/drm/img/spacer_1pixel.gif border=0 height=3 ',
+		'width=1><br></div>'
+	    );
+
+	    return;
+	}
+
+	bOpen = true;
+	if (dlen >= 1)
+	{
+		bOpen = FolderOpens[dlen-1] == 1;
+	}
+
+	foldername = folder;
+	fs = folder.split("/");
+
+	var ispaces = '';
+	var imgsrc = 'folderclosed.gif';
+	for(var i = 1; i < fs.length; i++)
+	{
+		ispaces += '&nbsp;&nbsp;';
+		foldername = fs[(fs.length-1)];
+	}
+
+	flen = fs.length;
+	for(; FolderDirs.length > 0; )
+	{
+		pFolder = FolderDirs[FolderDirs.length-1];
+		fs = pFolder.split("/");
+		if (flen == fs.length)
+			break;
+
+		FolderDirs.pop();
+		FolderOpens.pop();
+	}
+
+	if (FolderDirs.length == 0)
+		bOpen = true;
+
+	if (!bOpen)
+		fdisplay = 'display:none;';
+
+	document.writeln(
+		'<div id="div_', folder, '" style="height:18px;', fdisplay,
+		'"><span class=cFolder',
+		' onmouseup="folderMouseUp(this,\'', folder, '\')"',
+		' onmouseover="folderMouseOver(this, \'', folder, '\')"',
+		' onmouseout="folderMouseOut(this, \'', folder, '\')">',
+		ispaces, '<img id=iMenu', buildin, 'Folder_', folder,
+		' onmouseover="imgDMouseOver(this, \'', folder, '\')"',
+		' name=iMenu', buildin, 'Folder_', folder,
+		' src=/drm/img/', imgsrc, ' border=0 width=21 height=17>',
+		'&nbsp;',
+		' <a id="fstat_', folder, '" alt="Check ', folder, ' Folder"',
+		' title="', frame.fd_read[folder], ' read ',
+		frame.fd_unread[folder], ' unread"',
+		' href="javascript:OpenFolder(\'', folder, '\')">&nbsp;',
+		foldername.substr(0,1).toUpperCase(), foldername.substr(1),
+		'</a></span><br>',
+		'<img src=/drm/img/spacer_1pixel.gif border=0 height=3 ',
+		'width=1><br></div>'
+	);
+}
+
+function OutStorageBar ()
+{
+	document.writeln('<p>');
+	document.writeln('<div class=cStorageBar>');
+	document.writeln('Storage Left: ', frame.storage_left, ' MB<br>');
+	document.writeln('<table width=135 border=1 cellpedding=0 ',
+		'cellspacing=0 bordercolor=#000000>');
+	document.writeln('<tr height=7>');
+	if (frame.storage_use > 0)
+		document.writeln('<td bgcolor=#21599C width=',
+			frame.storage_use,
+			'><img src=/drm/img/spacer_1pixel.gif height=1 width=1>',
+			'</td>');
+	if (frame.storage_remain > 0)
+		document.writeln('<td bgcolor=#EAEFF8 width=',
+			frame.storage_remain,
+			'><img src=/drm/img/spacer_1pixel.gif height=1 width=1>',
+			'</td>');
+	document.writeln('</tr>');
+	document.writeln('</table>');
+	document.writeln('</div>');
+}
+
+//
+//
+//
+function SetFolderImg (fd)
+{
+	var img = document.images['iMenuFolder_' + fd];
+	if (!img) img = document.images['iMenuBFolder_' + fd];
+
+	if (img)
+	{
+		if (FolderImg)
+		{
+			if (img == FolderImg)
+				return;
+
+			FolderImg.src = '/drm/img/folderclosed.gif';
+		}
+
+		FolderImg = img;
+		FolderImg.src = '/drm/img/folderopen.gif';
+	}
+}
+
+var currentSort = '';
+
+function dspFolder (folder, sort)
+{
+	// revert
+	if (sort && (sort == currentSort))
+	{
+		sort = String.fromCharCode(sort.charCodeAt(0)+1);
+	}
+
+	currentSort = sort;
+	currentFolder = folder;
+	BlankPreview();
+	SetFolderImg (folder)
+	displayList(folder, sort, false);
+
+	if (currentFolder == 'out')
+	{
+		document.getElementById('who_col_span').innerHTML = 'To';
+		var obj = document.getElementById('who_prevw_span');
+		if (obj)
+			obj.innerHTML = 'To';
+	}
+	else
+	{
+		document.getElementById('who_col_span').innerHTML = 'From';
+		var obj = document.getElementById('who_prevw_span');
+		if (obj)
+			obj.innerHTML = 'From';
+	}
+
+	var html_up = '<img align=top src="/drm/img/blue_arrowup.gif" border="0" width="10" height="15">';
+	var html_down = '<img align=top src="/drm/img/blue_arrowdown.gif" border="0" width="10" height="15">';
+	var sortspan;
+	if (sort == "s" || sort == "t")
+	{
+		sortspan = document.getElementById('subject_sort_span');
+		sortspan.innerHTML = ((sort == "s") ? html_up : html_down);
+		sortspan = document.getElementById('date_sort_span');
+		sortspan.innerHTML = "";
+		sortspan = document.getElementById('from_sort_span');
+		sortspan.innerHTML = "";
+	}
+	else if(sort == "w" || sort == "x")
+	{
+		sortspan = document.getElementById('from_sort_span');
+		sortspan.innerHTML = ((sort == "w") ? html_up : html_down);
+		sortspan = document.getElementById('date_sort_span');
+		sortspan.innerHTML = "";
+		sortspan = document.getElementById('subject_sort_span');
+		sortspan.innerHTML = "";
+	}
+	else if(sort == "d" || sort == "e")
+	{
+		sortspan = document.getElementById('date_sort_span');
+		sortspan.innerHTML = ((sort == "d") ? html_up : html_down);
+		sortspan = document.getElementById('subject_sort_span');
+		sortspan.innerHTML = "";
+		sortspan = document.getElementById('from_sort_span');
+		sortspan.innerHTML = "";
+	}
+	else
+	{
+		sortspan = document.getElementById('date_sort_span');
+		sortspan.innerHTML = html_up;
+		sortspan = document.getElementById('subject_sort_span');
+		sortspan.innerHTML = "";
+		sortspan = document.getElementById('from_sort_span');
+		sortspan.innerHTML = "";
+	}
+}
+
+function sortFolder (sort)
+{
+	dspFolder(currentFolder, sort);
+
+}
+
+
+function OpenFolder (folder)
+{
+	if (openedMenu)
+		CloseOpenedMenu();
+
+	var fname = nameItem;
+	if (folder && folder != '')
+	{
+		fname = folder;
+	}
+
+	dspFolder(fname);
+}
+
+//
+//
+//
+function updateFolderStat (folder, read, unread)
+{
+	if (!read)
+	{
+		read = 0;
+		unread = 0;
+	}
+
+	//fd_read[folder] = read;
+	//fd_unread[folder] = unread;
+	var folder = document.getElementById('fstat_' + folder);
+	if (folder)
+	{
+		folder.title = read + ' read ' +
+				unread + ' unread';
+	}
+	
+}
+
+function refreshFolder (folder, read, unread)
+{
+	updateFolderStat(folder, read, unread);
+	if (currentFolder != folder)
+		return;
+
+	// Temp replace the whole browser
+	window.location.replace('/drm5/index.asp?folder=' + folder);
+	// Ajax error
+	// BlankPreview();
+	// SetFolderImg (folder)
+	// displayList(folder, currentSort, false);
+}
+
+//
+//
+//
+function showWait ()
+{
+	var dsp = document.getElementById("drm_display");
+	var ele = document.getElementById("drm_list_mask");
+	ele.style.width = dsp.offsetWidth + 'px';
+	ele.style.height = dsp.offsetHeight + 'px';
+	ele.style.display = 'block';
+}
+
+function endWait ()
+{
+	var ele = document.getElementById("drm_list_mask");
+	ele.style.display = 'none';
+}
+
+//
+//
+//
+var transfering = false;
+function TransferDone ()
+{
+	if(Ajax.checkReadyState('loading') == "OK")
+	{
+		listReady();
+		//xdebug(Ajax.getResponse());
+		dspFolder(currentFolder);
+		transfering = false;
+	}
+}
+
+function TransferStart (folder)
+{
+	if (transfering)
+		return;
+
+	showWait();
+	transfering = true;
+
+	listWait();
+
+	var postdata = 'actiontype=x' + encodeURI(folder);
+	postdata += '&mboxname=' + encodeURI(currentFolder);
+
+	var sel = '';
+	for (var n = 0; n < selects.length; n++)
+	{
+		sel += selects[n].msg + "\n";
+		postdata += '&' + selects[n].msg.replace(/\+/g, ",") + '=yes';
+	}
+
+	//xdebug('<p>MouseDrop ' + folder + '<br>' + sel + '<br>');
+		
+	try
+	{
+		AjaxUpdater.Update("POST", '/drm-bin/mailxfer?-X',
+			TransferDone, postdata);
+	}
+	catch(e)
+	{
+		//xdebug ("List Transfer Ajax error " + e);
+	}
+}
+
+function TransferSelected ()
+{
+	if (openedMenu)
+		CloseOpenedMenu();
+
+	TransferStart(nameItem);
+}
+
+//
+//
+//
+function NewFolder ()
+{
+	if(foldercount < maxcount)
+	{
+		var winurl = '/drm-bin/addfolder?-A';
+		if ((DRMFolderWin != null) && !DRMFolderWin.closed)
+			DRMFolderWin.location.href = winurl;
+		else
+		{
+			var winname = "DRMFolderWin";
+			DRMFolderWin = window.open(winurl, winname,
+			"width=300,height=200,resizable=no,scrollbars=no,toolbar=no,status=yes");
+		}
+
+		DRMFolderWin.focus();
+	}
+	else
+	{
+		OpenErrorWin('maxbox')
+		return;
+	}
+}
+
+function AddFolder ()
+{
+	if (openedMenu)
+		CloseOpenedMenu();
+
+	if(foldercount < maxcount)
+	{
+		var folderpath = '';
+		if (nameItem && nameItem != '')
+			folderpath = nameItem;
+		var winurl = '/drm-bin/addfolder?-A+' + folderpath;
+		if ((DRMFolderWin != null) && !DRMFolderWin.closed)
+			DRMFolderWin.location.href = winurl;
+		else
+		{
+			var winname = "DRMFolderWin";
+			DRMFolderWin = window.open(winurl, winname,
+			"width=300,height=200,resizable=no,scrollbars=no,toolbar=no,status=yes");
+		}
+
+		DRMFolderWin.focus();
+	}
+	else
+	{
+		OpenErrorWin('maxbox')
+		return;
+	}
+}
+
+function RenameFolder ()
+{
+	if (openedMenu)
+		CloseOpenedMenu();
+
+	var winurl = '/drm-bin/renamefolder?' + nameItem;
+	if ((DRMFolderWin != null) && !DRMFolderWin.closed)
+		DRMFolderWin.location.href = winurl;
+	else
+	{
+		var winname = "DRMFolderWin";
+		DRMFolderWin = window.open(winurl, winname,
+			"width=300,height=200,resizable=no,scrollbars=no,toolbar=no,status=yes");
+	}
+
+	DRMFolderWin.focus();
+}
+
+function DeleteFolder ()
+{
+	CloseOpenedMenu();
+
+	var winurl = '/drm-bin/delfolder?' + nameItem;
+	if ((DRMFolderWin != null) && !DRMFolderWin.closed)
+		DRMFolderWin.location.href = winurl;
+	else
+	{
+		var winname = "DRMFolderWin";
+		DRMFolderWin = window.open(winurl, winname,
+			"width=300,height=200,resizable=no,scrollbars=no,toolbar=no,status=yes");
+	}
+
+	DRMFolderWin.focus();
+}
+
+function EmptyTrash ()
+{
+	var winurl = '/drm-bin/emptytrash?+' + Math.random();
+	if ((DRMFolderWin != null) && !DRMFolderWin.closed)
+		DRMFolderWin.location.href = winurl;
+	else
+	{
+		var winname = "DRMFolderWin";
+		DRMFolderWin = window.open(winurl, winname,
+			"width=300,height=200,resizable=no,scrollbars=no,toolbar=no,status=yes");
+	}
+
+	DRMFolderWin.focus();
+}
+
+function EmptyInBox ()
+{
+	var winurl = '/drm-bin/emptyinbox?+' + Math.random();
+	if ((DRMFolderWin != null) && !DRMFolderWin.closed)
+		DRMFolderWin.location.href = winurl;
+	else
+	{
+		var winname = "DRMFolderWin";
+		DRMFolderWin = window.open(winurl, winname,
+			"width=300,height=200,resizable=no,scrollbars=no,toolbar=no,status=yes");
+	}
+
+	DRMFolderWin.focus();
+}
+
+var marking = false;
+function MarkDone ()
+{
+	if(Ajax.checkReadyState('loading') == "OK")
+	{
+		listReady();
+		//xdebug(Ajax.getResponse());
+		dspFolder(currentFolder);
+		marking = false;
+	}
+}
+
+function MarkStart (marktype)
+{
+	if (marking)
+		return;
+
+	marking = true;
+
+	listWait();
+
+	var postdata = 'actiontype=' + marktype;
+	postdata += '&mboxname=' + encodeURI(currentFolder);
+
+	var sel = '';
+	for (var n = 0; n < selects.length; n++)
+	{
+		sel += selects[n].msg + "\n";
+		postdata += '&' + selects[n].msg.replace(/\+/g, ",") + '=yes';
+	}
+
+	try
+	{
+		AjaxUpdater.Update("POST", '/drm-bin/mailmark?-X',
+			MarkDone, postdata);
+	}
+	catch(e)
+	{
+		//xdebug ("List Transfer Ajax error " + e);
+	}
+}
+
+function MarkReadSelected ()
+{
+	closeMenu(0);
+	MarkStart('r');
+}
+
+function MarkUnreadSelected ()
+{
+	closeMenu(0);
+	MarkStart('u');
+}
+
+//
+// Actually, the folder panel is not in a frame anymore...
+// However, parent.parent just point back to itself.
+//
+var frame = parent.parent;
+
+function dspFolderDir (dirID, dtype)
+{
+	//currentFolderDir = folderdir;
+	//BlankPreview();
+
+	var dspStg;
+	var dspImg;
+	if (dtype == 1)
+	{
+		dspStg = '';
+		dspImg = 'emptyinbox.gif';
+	}
+	else
+	{
+		dspStg = 'none';
+		dspImg = 'addfolder.gif';
+	}
+
+	var dID = "div_" + dirID;
+	var obj = document.getElementById(dID);
+	if (!obj)
+		return;
+
+	var fImg = document.getElementById("iMenuFolderDir_" + dirID);
+	if (fImg)
+		fImg.src = '/drm/img/' + dspImg;
+
+	var fs = dirID.split('\/');
+	var dLen = fs.length;
+	for (var div_obj = obj.nextSibling; div_obj;
+		div_obj = div_obj.nextSibling)
+	{
+		if (div_obj.nodeName != 'DIV')
+			continue;
+
+		id = div_obj.id.substring(4);
+		if(id == '')
+			continue;
+
+		var tid = id.substring(0, dirID.length);
+		if(id.substring(0, dirID.length) != dirID)
+			continue;
+
+		fs = id.split('\/');
+		if (id.charAt(id.length-1) == '\/')
+		{
+			if (fs.length == (dLen + 1))
+				div_obj.style.display = dspStg;
+		}
+		else if(fs.length == dLen)
+		{
+			div_obj.style.display = dspStg;
+		}
+	}
+}
+
+function OpenFolderDir (folder)
+{
+	if (openedMenu)
+		CloseOpenedMenu();
+
+	if(folder && folder != '')
+		dspFolderDir(folder, 1);
+	else
+		dspFolderDir(nameItem, 1);
+}
+
+function CloseFolderDir (folder)
+{
+	if (openedMenu)
+		CloseOpenedMenu();
+
+	if(folder && folder != '')
+		dspFolderDir(folder, 0);
+	else
+		dspFolderDir(nameItem, 0);
+}
+
+function AddFolderDir ()
+{
+	if (openedMenu)
+		CloseOpenedMenu();
+
+	var folderpath = '';
+	if (nameItem && nameItem != '')
+		folderpath = nameItem;
+	var winurl = '/drm-bin/addfolderdir?-A+' + folderpath;
+	if ((DRMFolderWin != null) && !DRMFolderWin.closed)
+		DRMFolderWin.location.href = winurl;
+	else
+	{
+		var winname = "DRMFolderWin";
+		DRMFolderWin = window.open(winurl, winname,
+		"width=300,height=200,resizable=no,scrollbars=no,toolbar=no,status=yes");
+	}
+
+	DRMFolderWin.focus();
+}
+
+function DeleteFolderDir ()
+{
+	CloseOpenedMenu();
+
+	var dID = "div_" + nameItem;
+	var obj = document.getElementById(dID);
+	if (!obj)
+		return;
+
+	var fs = nameItem.split('\/');
+	var dLen = fs.length;
+	for (var div_obj = obj.nextSibling; div_obj;
+		div_obj = div_obj.nextSibling)
+	{
+		if (div_obj.nodeName == 'DIV')
+		{
+			// 
+			if (obj.id != div_obj.id.substring(0, obj.id.length))
+				break;
+
+			OpenErrorWin('folderdir')
+			return;
+		}
+	}
+
+	var winurl = '/drm-bin/delfolder?' + nameItem;
+	if ((DRMFolderWin != null) && !DRMFolderWin.closed)
+		DRMFolderWin.location.href = winurl;
+	else
+	{
+		var winname = "DRMFolderWin";
+		DRMFolderWin = window.open(winurl, winname,
+			"width=300,height=200,resizable=no,scrollbars=no,toolbar=no,status=yes");
+	}
+
+	DRMFolderWin.focus();
+}
+
+function folderDMouseOver (target, folder)
+{
+	if (!drmDrag.isDrag())
+		return;
+
+//	if (currentFolder != folder)
+//	{
+//		target.style.cursor = 'crosshair';
+//
+//		var img = target.getElementsByTagName('img');
+//		if (img && img[0])
+//		     img[0].src = '/drm/img/transfericon.gif';
+//	}
+//	else
+//	{
+		target.style.cursor = 'no-drop';
+//	}
+		
+}
+
+function folderDDefault (target, folder)
+{
+	target.style.cursor = 'pointer';
+/*
+	var imgs = target.getElementsByTagName('img');
+	var img = (folder == currentFolder)
+		? '/drm/img/emptyinbox.gif'
+		: '/drm/img/addfolder.gif';
+	var imgnow = imgs[0].src;
+	if (imgnow.substr(imgnow.length-img.length) != img)
+		imgs[0].src = img;
+*/
+}
+
+function folderDMouseOut (target, folder)
+{
+	folderDDefault(target, folder);
+}
+
+function folderDMouseUp (target, folder)
+{
+	folderDDefault(target, folder);
+	drmDrag.isDrop(target, folder);
+}
+
+function imgDMouseOver (target, folder)
+{
+	if (drmDrag.isDrag())
+	{
+		folderDMouseOver(target, folder);
+		return false;
+	}
+
+	var obj = document.images['iMenuFolderDir_' + folder];
+
+	if (obj)
+		showMenu(obj);
+	
+	return false;
+}

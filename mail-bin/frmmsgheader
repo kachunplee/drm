@@ -1,0 +1,19 @@
+#! /usr/bin/perl
+
+use CGI qw(:standard);
+use strict;
+
+use drmdef;
+
+$| = 1;
+print header;
+
+print <<EOM;
+<html>
+<body>
+&nbsp;
+</body>
+</html>
+EOM
+
+exit 0;

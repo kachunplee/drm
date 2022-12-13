@@ -1,0 +1,14 @@
+v1.21
+-----
+051006	Kachun
+	- Add American timezone to inlib.cpp
+
+050503	Kachun
+	- remove file xx of xxx and day xx of xxx from beginning multi-part.
+v1.20
+-----
+040109	Kachun
+	- Add split routines
+
+030924	Kachun
+	- fix bdbstg to use db 4.1

@@ -1,0 +1,16 @@
+#suggestDiv {
+        position: absolute;
+        background-color: #FFFFFF;
+        margin: 5px 0 0 0;
+        padding: 5px;
+        border: 1px solid #3173CE;
+        width: 100px;
+        overflow: auto;
+        height: 100px;
+        display: none;
+}
+
+#suggestEntry {
+        font-size: 80%;
+        width: 100%;
+}

@@ -1,0 +1,96 @@
+#! /usr/bin/perl
+
+use strict;
+use drmdef;
+
+$|=1;
+
+print 'Content-Type: text/html', "\n\n";
+
+my $drmprefprog = $BINDIR . 'drmpref';
+
+my @menutitle = ('Account Details', 'Edit Accounts',
+		  'Preferences Help');
+my @menugif1 = ("${IMGDIR}drmtool_pref_editaccounts.gif",
+			"${IMGDIR}drmtool_pref_details.gif",
+			"${IMGDIR}drmtool_pref_details.gif");
+my @menugif2 = ("${IMGDIR}drmtool_pref_help.gif",
+			"${IMGDIR}drmtool_pref_help.gif",
+			"${IMGDIR}drmtool_pref_editaccounts.gif");
+
+my @menutext1 = ('Edit Accounts', 'Account Details', 'Account Details');
+my @menutext2 = ('Preferences Help', 'Preferences Help', 'Edit Accounts');
+
+my @menulink1 = ('/1', '', '');
+my @menulink2 = ('/2', '/2', '/1');
+
+my @pathinfo = split('/', $ENV{PATH_INFO});
+my $idx = $pathinfo[1];
+$idx += 0;
+$idx = scalar(@menugif1) - 1 if $idx > scalar(@menugif1);
+
+my ($title, $gif1, $gif2, $link1, $link2)
+	= ($menutitle[$idx],
+		$menugif1[$idx], $menugif2[$idx],
+		$drmprefprog . $menulink1[$idx],
+		$drmprefprog . $menulink2[$idx]);
+my ($mtext1, $mtext2) = ($menutext1[$idx], $menutext2[$idx]);
+
+#
+#
+#
+	print <<EOM;
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>New Page 1</title>
+<link rel="stylesheet" type="text/css" href="${CSSDIR}drmmenu.css" />
+</head>
+
+<body style="font-family: Arial; font-size: 90%">
+
+<div "style=position: relative">
+<div id="stitleBar"><img src="${IMGDIR}toolbartop.gif" height="28" width="100%"></div><div id="mainMenu" class="mainMenu" style="min-width: 720px; background-image:url('${IMGDIR}menubg.gif');">
+  <div style="margin:0; padding: 4px 15px 0 80px;">
+    <ul id="menuList1" class="menuList">
+      <li>
+        <a class="selector" href="$link1" target="_top"><b>$mtext1</b></a>
+      </li>
+      | <li>
+        <a class="selector" href="$link2" target="_top"><b>$mtext2</b></a>
+      </li>
+      | <li>
+        <a class="selector" href="/cgi-bin/ulogout"><b>Logout</b></a>
+    </ul>
+  </div>
+</div>
+<div style="position:absolute;top:0;left:10px;"><img id="stitleImage" src="${IMGDIR}stitlelogo.gif" border=0></div>
+</div>
+<div align="left">
+  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1000">
+    <tr>
+      <td bgcolor="#FFFFFF">
+      <div align="left">
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="1010" align="left">
+          <tr>
+            <td bgcolor="#EAEFF8" height="25">
+      <font face="Arial" size="2" color="#396BB5"><b>&nbsp;$title</b></font></td>
+          </tr>
+          <tr>
+            <td bgcolor="#396BB5" width="6">
+            <img border="0" src="${IMGDIR}spacer_2pixel.gif" width="5" height="2"></td>
+          </tr>
+        </table>
+      </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+EOM
+
+exit 0;

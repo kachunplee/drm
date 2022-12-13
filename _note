@@ -1,0 +1,3 @@
+drmfolder was very slow, especially if one of the mail box has a corrupted block.
+Should rewrite with C++  - done
+Start with foldercnt.cpp.

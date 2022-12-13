@@ -1,0 +1,246 @@
+#!/usr/bin/perl
+
+use drmdef;
+use FileHandle;
+use IPC::Open2;
+
+$| = 1;
+$spellprog = "/var/local/bin/aspell -a";
+
+	print "Content-type: text/html\n\n";
+
+print <<EOM;	#------------------------------------------
+<html>
+<head>
+
+<script language="JavaScript">
+<!--
+
+var change = false;
+
+function ListCorrection(field, word, suggestions)
+{
+	var ListWin = window.open("", "Correction", "resizable=no,width=280,height=250");
+	document.ListForm.Field.value = field;
+	document.ListForm.Word.value = word;
+	document.ListForm.Suggestions.value = suggestions;
+	document.ListForm.submit();
+	if(navigator.appName=='Netscape')
+	{
+		ListWin.focus();
+	}
+}
+
+function Done()
+{
+	document.SpellListForm.submit();
+}
+
+function Cancel()
+{
+	document.SpellListForm.reset();
+	document.SpellListForm.submit();
+}
+
+//-->
+</script>
+
+</head>
+
+<body bgcolor=#FFFFFF>
+<form method=POST name=ListForm target=Correction action=correct>
+<input type="hidden" name="Field" value="">
+<input type="hidden" name="Word" value="">
+<input type="hidden" name="Suggestions" value="">
+</form>
+EOM
+
+	read(STDIN, $inbuf, $ENV{'CONTENT_LENGTH'});
+
+	#
+	# Check if java script enable
+	#
+
+	@pairs = split(/&/, $inbuf);
+	foreach $pair (@pairs)
+	{
+		($name, $value) = split(/=/, $pair);
+		if($name eq "MailBody")
+		{
+			# Found Body
+			#
+			# Fix up special characters
+			$value =~ tr/+/ /;
+			$value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
+
+			# split into lines
+			@line = split(/\r\n/, $value);
+
+			# open pipe to spell prog
+			$pid = open2( \*Reader, \*Writer, $spellprog);
+
+			$title = <Reader>;
+			# if($title eq "") ...
+
+			BeginForm();
+			$nInput = 0;
+			my $nLine = 0;
+			while($nLine < $#line)
+			{
+				CheckLine($line[$nLine++], 1);
+			}
+			CheckLine($line[$nLine], 0);
+			EndForm();
+			last;
+		}
+	}
+
+	print "</body>\n";
+	print "</html>\n";
+	exit (0);
+
+
+sub CheckLine
+{
+	my $ln = $_[0];
+	my $endl = $_[1];
+
+	if($ln =~ /^>/)
+	{
+		OutQuoteSentence(($endl==1) ? $ln . "\n" : $ln);
+		return;
+	}
+
+	# send line to spell checker
+	print Writer "^", $ln, "\n";
+
+	my $i = 0;
+	my $j = 0;
+	while(($result = <Reader>) ne "\n")
+	{
+		if($result =~ /^[#&?]/)
+		{
+			chop $result;
+			my ($head, $sugg) = split(/: /, $result);
+			my @fld = split(/ /, $head);
+
+			my $cmd = $fld[0];
+			shift @fld;
+			my $word = $fld[0];
+			shift @fld;
+			my $nSugg = 0;
+			if($cmd ne '#')
+			{
+				$nSugg = $fld[0];
+				shift @fld;
+			}
+
+
+			#print STDERR "j = ", $j, " fld[0] = ", $fld[0], "\n";
+
+			$i = $fld[0] - $j - 1;
+			OutGoodSentence(substr($ln, 0, $i)) if($fld[0] > 0);
+			$i += length($word);
+			$j += $i;
+
+			#print STDERR "i = ", $i, "\n";
+			$ln = substr($ln, $i);
+
+			OutBadWord($word, $nSugg, $sugg);
+		}
+	}
+
+	OutGoodSentence(($endl==1) ? $ln . "\n" : $ln);
+	OutEndl();
+}
+
+sub BeginForm
+{
+	print <<EOM;
+	<form method=POST name=SpellListForm action=spelldone>
+EOM
+}
+
+sub EndForm
+{
+	print <<EOM;
+	</form>
+	<p>
+	<center>
+	<a href=javascript:Done()><img src=${IMGDIR}bluesave.gif border=0 width=82 height=22></a>
+	<a href=javascript:Cancel()><img src=${IMGDIR}bluecancel.gif border=0 width=82 height=22></a>
+	</center>
+EOM
+}
+
+sub OutGoodSentence
+{
+	my $sentence = $_[0];
+	print '<font face=Arial size=2 color=#000000>';
+	print HTMLText($sentence);
+	$sentence =~ s/\r/\\r/;
+	$sentence =~ s/\n/\\n/;
+	print '</font><input type=hidden name=phase value=', QuoteText($sentence), '>';
+	++$nInput;
+}
+
+sub OutQuoteSentence
+{
+	my $sentence = $_[0];
+	$sentence =~ s/\r/\\r/;
+	$sentence =~ s/\n/\\n/;
+	print '<input type=hidden name=phase value=', QuoteText($sentence), '>';
+	++$nInput;
+}
+
+sub OutBadWord
+{
+	my $word = $_[0];
+	my $nSugg = $_[1];
+	my @suggs = split(/, /, $_[2]);
+
+	print '<input type=text name=phase value=', QuoteText($word),
+		' size=', length($word)+1,
+		' onChange="change=true" >';
+
+	if($nSugg == 0)
+	{
+		$nInput++;
+		return;
+	}
+
+	$word =~ s/\'/\\\'/g;
+	print '&nbsp;<a href="javascript:ListCorrection(\'',
+		$nInput++, '\', \'', $word, '\', \'';
+	for($n = 1; $n <= $nSugg; $n++)
+	{
+		$sg = $suggs[0];
+		$sg =~ s/'/\\'/g;
+		print '&lt;option&gt;', $sg, '&lt;/option&gt;';
+		shift @suggs;
+	}
+	print '\')"><img src=', $IMGDIR, 'bluequestionmark.gif alt="Spell Correction" border=0 width=14 height=13></a>&nbsp;';
+}
+
+sub QuoteText
+{
+	my $text = $_[0];
+
+	$text =~ s/"/\&quot;/g;
+	return '"' . $text . '"';
+}
+
+sub HTMLText
+{
+	my $text = $_[0];
+
+	$text =~ s/&/&amp;/g;
+	$text =~ s/%/&#37;/g;
+	$text =~ s/</&lt;/g;
+	return $text;
+}
+
+sub OutEndl
+{
+	print "<br>\n";
+}

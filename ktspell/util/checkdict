@@ -1,0 +1,35 @@
+#! /usr/bin/perl
+
+use Fcntl;
+use DB_File;
+
+use strict;
+
+my ($dctf, $dct_mtime) = @ARGV;
+my $dctdb = $dctf . '.db';
+$dctf .= '.per';
+
+if (not -f $dctdb)
+{
+	print 'DICT NOT FOUND: ', $dctdb, "\n";
+	exit 0;
+}
+
+my $mtime = (stat(_))[9];
+if ($mtime <= $dct_mtime)
+{
+	print 'DICT NOT CHANGED: ', $dctdb, "\n";
+	exit 0;
+}
+
+print 'DICT NEW: ', $mtime, ' ', $dctdb, "\n";
+
+my %DB;
+my $r = tie %DB, 'DB_File', $dctdb, O_RDONLY;
+$r || die print STDERR 'checkdict: Cannot update ', $dctdb, ": $!\n";
+while(my ($word, $value) = each %DB)
+{
+	print $word, ' ', $value, "\n";
+}
+untie $r;
+print '--END--', "\n";

@@ -1,0 +1,42 @@
+#! /usr/bin/perl
+
+use CGI qw(:standard);
+use strict;
+
+use drmdef;
+use drmsettings;
+
+GetSettings();
+
+$| = 1;
+print header;
+
+my $headerheight = '119';
+
+use vars qw($DEBUG);
+
+my $BORDER = $DEBUG ? 1 : 0;
+
+my $foldername = $ARGV[0];
+if ($foldername ne '')
+{
+	$foldername .= "+";
+}
+shift @ARGV;
+my $header = "-H+";
+my $body = "-B+";
+
+my $args = join('+', @ARGV);
+$args =~ s/\\//g;
+$args =~ s/&/&amp;/g;
+$args =~ s/</&lt;/g;
+$args =~ s/>/&gt;/g;
+
+print <<EOM;
+<frameset rows="$headerheight,*" framespacing=0 frameborder=$BORDER border=1>
+	<frame name=DRMMsgHeader marginheight=0 marginwidth=0 scrolling=no NORESIZE src=message?$foldername$header$args>
+	<frame name=DRMMsgBody marginheight=5 marginwidth=5 src=message?$foldername$body$args>
+</frameset>
+EOM
+
+exit 0;

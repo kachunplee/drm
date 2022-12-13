@@ -1,0 +1,596 @@
+#! /usr/bin/perl
+
+use lib qw(. /usr/local/spmz/spamhippo/bin );
+use ZM_Def;
+
+$! = 1;
+print 'Content-Type: text/html', "\n\n";
+
+#
+use strict;
+
+use drmdef;
+require "drmpref.ph";
+use vars qw($MAILHOME);
+
+my $chgprefprog = $BINDIR . 'frmprefmn';
+
+my $user=$ENV{REMOTE_USER};
+my $server=$ENV{SERVER_NAME};
+if($user eq "")
+{
+	print "<h3>No user selected</h3>\n";
+	exit;
+}
+
+#
+#
+my $userDir = "$MAILHOME/$user";
+my $fromrc = "$MAILHOME/$user/.fromrc";
+my $autoresprc = "$MAILHOME/$user/autoresp.rc";
+my $autoresprpy = "$MAILHOME/$user/autoresp.rpy";
+
+#
+my (%RC, %FORM);
+my $mtime = ReadRC($fromrc, \%RC);
+my $changed;
+my $errmsg;
+
+my $pwdchanged = 0;
+my $passwd = "********";
+my $passwdr = "********";
+if ($ENV{REQUEST_METHOD} eq "POST")
+{
+	GetForm(\%FORM);
+
+	if (GotPasswdChg($ENV{REMOTE_USER}) &&
+	 ($FORM{passwdr} ne '********' || $FORM{passwdr} ne '********'))
+	{
+		$passwd = $FORM{passwd};
+		$passwdr = $FORM{passwdr};
+		if ($passwd ne $passwdr)
+		{
+			$errmsg = "Password does not match Retype Password";
+		}
+		elsif (length($passwd) < 4
+			|| length($passwd) > 8)
+		{
+			$errmsg = "Password needs to be 4 to 6 characters long";
+		}
+		elsif ($passwd =~ /[^\x20-\xfe]/)
+		{
+			$errmsg = "Illegal character(s) in Password";
+		}
+		else
+		{
+			# Set passwd
+			$errmsg = GotPasswdChg($ENV{REMOTE_USER}, $passwd);
+			$pwdchanged = ($errmsg eq '');
+		}
+	}
+
+	delete($FORM{passwd});
+	delete($FORM{passwdr});
+
+	CheckPrefForm(\%FORM);
+
+	$changed = (IsRCChg(\%RC, \%FORM) > 0);
+	SaveRC($userDir, $fromrc, \%RC) if $changed;
+
+	my $bMsg = 0;
+	if (defined($FORM{autorespmsg}) && $FORM{autorespmsg} ne '')
+	{
+		if (open(TRPY, "> $autoresprpy.tmp"))
+		{
+			my @m = split(/\r\n/, $FORM{autorespmsg});
+			foreach (@m)
+			{
+				$bMsg = 1 if (length($_));
+				print TRPY $_, "\n";
+			}
+			close TRPY;
+			unlink "$autoresprpy.old";
+			rename $autoresprpy, "$autoresprpy.old";
+			rename "$autoresprpy.tmp", $autoresprpy;
+			$bMsg = 1;
+		}
+		else
+		{
+			$errmsg = "Cannot write into auto-response message file";
+		}
+	}
+	else
+	{
+		if (! (defined($FORM{autoresp}) && $FORM{autoresp} eq 'on'))
+		{
+			unlink "$autoresprpy.old";
+			rename $autoresprpy, "$autoresprpy.old";
+		}
+	}
+
+	if (defined($FORM{autoresp}) && $FORM{autoresp} eq 'on')
+	{
+		if ($bMsg == 0)
+		{
+			$errmsg = "Cannot enable auto-response without a response message";
+		}
+		elsif (not -s $autoresprc)
+		{
+			if (open(TRC, "> $autoresprc.tmp"))
+			{
+				my $user = $ENV{REMOTE_USER};
+				print TRC ":0\n";
+				print TRC "| /usr/local/bin/formail -R To: Save-To: | /usr/local/bin/formail -ri Save-To: -A\"X-Loop: \$LOOPNAME\" | (/usr/local/bin/formail -f -R Save-To: From: ; cat \$HOME/autoresp.rpy ) | \$SENDMAIL -oi -t\n";
+				close TRC;
+				unlink "$autoresprc.old";
+				rename $autoresprc, "$autoresprc.old";
+				rename "$autoresprc.tmp", $autoresprc;
+			}
+		}
+	}
+	elsif (-f $autoresprc)
+	{
+		unlink "$autoresprc.old";
+		rename $autoresprc, "$autoresprc.old";
+	}
+}
+
+#
+#
+#
+#my ($fromname, $fromemail) = defined($RC{from}) ? ParseFrom($RC{from})
+#			: ("", $user . "\@$domain");
+my ($fromname, $fromemail) = (defined($RC{from}) && $RC{from} ne '') ? 
+			split(/\t/, $RC{from})
+			: ("", $user . "\@$domain");
+
+my $checktime = defined($RC{checktime}) ? ParseChecktime($RC{checktime}) : 0;
+
+my $soundsrc = defined($RC{soundsrc})
+	?  ParseSoundsrc($RC{soundsrc}) 
+	: ((($ENV{'HTTPS'} eq 'on') ?  "https://" : "http://")
+			. $server . "/drm/newmail.wav");
+
+my $folderframe = defined($RC{folderframe})
+	?  ParseFolderFrame($RC{folderframe}) : "checked";
+
+my $nopreviewframe = defined($RC{previewframe})
+	?  ParsePreviewFrame($RC{previewframe}) : "";
+
+my $dspimage = defined($RC{dspimage})
+	?  ParseDspImage($RC{dspimage}) : "checked";
+
+my $listfontsize = defined($RC{listfontsize})
+	?  ParseListFontSize($RC{listfontsize}) : "xx-small";
+
+my $autoresp = '';
+if (-s $autoresprc)
+{
+	$autoresp = 'checked';
+}
+my $autorespmsg;
+if (open (RPY, "< $autoresprpy"))
+{
+	while(<RPY>)
+	{
+		$autorespmsg .= $_;
+	}
+	close RPY;
+}
+
+my $xxs_font = "";
+my $xs_font = "";
+my $s_font = "";
+if ($listfontsize eq 'small') 
+{
+	$s_font = "checked";
+}
+elsif ($listfontsize eq 'x-small')
+{
+	$xs_font = "checked";
+}
+elsif ($listfontsize eq 'xx-small')
+{
+	$xxs_font = "checked";
+}
+
+my $tzname = defined($RC{tzname})
+	? ParseTZName($RC{tzname}) : "America/Los_Angeles";
+
+my $dateformat = defined($RC{dateformat})
+	? ParseDateFormat($RC{dateformat}) : "mm/dd";
+
+#
+# Out Form
+#
+	print <<EOM;
+<html>
+<head>
+<title>Personal Info</title>
+<script src=/drm/js/drmpref.js></script>
+<script>
+var dir_ht = '$HTDIR';
+</script>
+</head>
+
+<body>
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+    <tr>
+      <td><img border="0" src="${IMGDIR}spacerwhite.gif" width="25" height="7"></td>
+    </tr>
+    <tr>
+      <td><img border="0" src="${IMGDIR}spacerwhite.gif" width="25" height="7"></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<div align="center">
+  <center>
+  <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#396BB5" width="575">
+    <tr>
+      <td bgcolor="#EAEFF8" height="21">
+      <font face="Arial" size="2" color="#396BB5"><b>&nbsp;</b></font><b><font face="Arial" size="2" color="#396BB5"> 
+      View or Edit Settings:</font></b></td>
+    </tr>
+    <tr>
+      <td>
+      <div align="center">
+        <center>
+	<form name=formPref method=POST action=$chgprefprog?$mtime>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="565">
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+EOM
+
+	if ($errmsg ne '')
+	{
+		print <<EOM;
+          <tr>
+            <td colspan=2 width="565"><font face="Arial" size="2" color="#ff0000">$errmsg</font></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+EOM
+	}
+
+	print <<EOM;
+          <tr>
+            <td width="179"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Name:</font></b></td>
+            <td width="386"><input type="text" name="fromname" value="$fromname" size="24"></td>
+          </tr>
+          <tr>
+            <td width="179"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Email address:</font></b></td>
+            <td width="386"><input type="text" name="fromemail" value="$fromemail" size="37"></td>
+          </tr>
+EOM
+    if (GotPasswdChg($ENV{REMOTE_USER}))
+    {
+	print <<EOM;
+          <tr>
+            <td width="179"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Password:</font></b></td>
+            <td width="386"><input type="password" name="passwd" value="$passwd" size="8"></td>
+          </tr>
+          <tr>
+            <td width="179"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Retype Password:</font></b></td>
+            <td width="386"><input type="password" name="passwdr" value="$passwdr" size="8"></td>
+          </tr>
+EOM
+    }
+	print <<EOM;
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td width="179"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Auto-check mail:</font></b></td>
+            <td width="386"><input type="text" name="checktime" value="$checktime" size="9">
+                  <font face="Arial" size="2" color="#396BB5">minutes</font></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td width="179"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Image attachments:</font></b></td>
+            <td width="386">
+                  <input type="checkbox" name=dspimage $dspimage>
+            <font face="Arial" size="2" color="#396BB5">display in mail message</font></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td width="179"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Message preview:</font></b></td>
+            <td width="386">
+                  <input type="checkbox" name=nopreviewframe $nopreviewframe>
+            <font face="Arial" size="2" color="#396BB5">hide this window</font></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td width="179"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Display font size:</font></b></td>
+            <td width="386">
+                  <input type=radio name=listfontsize  value=xx-small $xxs_font>
+            <font face="Arial" size="2" color="#396BB5">small </font>
+                  <input type=radio name=listfontsize value=x-small $xs_font>
+            <font face="Arial" size="2" color="#396BB5">medium </font>
+                  <input type=radio name=listfontsize name=listfontsize value=small $s_font>
+            <font face="Arial" size="2" color="#396BB5">large</font></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td width="179" valign=top><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Time zone:</font></b></td>
+            <td width="386">
+              <input type=hidden name=tzname value="$tzname">
+EOM
+
+	my $zoneinfo = '/usr/share/zoneinfo';
+	my ($tz1, $tz2) = split (/\//, $tzname);
+
+	my $tzok = 0;
+	if (opendir(ZDIR, $zoneinfo))
+	{
+		my @tzs;
+		while(my $f = readdir ZDIR)
+		{
+			next if $f =~ /[.]/;
+			push @tzs, $f;
+		}
+		close ZDIR;
+
+        	print "<select name=x_tz1 onChange=\"javascript:changeTZ1(this)\">";
+
+		foreach my $f (sort @tzs)
+		{
+			print "   <option value=\"$f\"";
+			if ($tz1 eq $f)
+			{
+				$tzok = 1;
+				print " selected";
+			}
+			print ">$f";
+			print "..." if -d "$zoneinfo/$f";
+			print "</option>\n";
+		}
+        	print "</select> <span id=\"tz2_div\">";
+
+		if ($tz1 ne '')
+		{
+	 	    $tzok = 0;
+		    @tzs = ();
+		    if (opendir(ZDIR, "$zoneinfo/$tz1"))
+		    {
+			while(my $f = readdir ZDIR)
+			{
+				next if $f =~ /[.]/;
+				push @tzs, $f;
+			}
+			close ZDIR;
+		    }
+
+		    if (0 < @tzs)
+		    {
+        		print "<select name=x_tz2 onchange=\"changeTZ2(this)\">";
+			foreach my $f (sort @tzs)
+			{
+				print "   <option value=\"$f\"";
+				if($tz2 eq $f)
+				{
+					$tzok = 1;
+					print " selected";
+				}
+				print ">$f</option>\n";
+			}
+        		print "</select>";
+		    }
+		}
+		print "</span>";
+
+	}
+
+	# what happen if not $tzok???
+
+	print <<EOM;
+          <br><font face="Arial" size="2" color="#396BB5">Choices followed by "..." include sub-menus to select by city, country and other methods</font>
+          </td></tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td width="179"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Date format:</font></b></td>
+            <td width="386">
+              <select name=dateformat>
+EOM
+
+	print "                <option value=\"mm/dd\"";
+	if ($dateformat ne 'dd/mm')
+	{
+		print " selected";
+	}
+	print ">mm/dd\n";
+	print "                <option value=\"dd\/mm\"";
+	if ($dateformat eq 'dd/mm')
+	{
+		print " selected";
+	}
+	print ">dd/mm\n";
+
+	print <<EOM;
+              </select></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td width="179"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;'New Mail' sound file:</font></b></td>
+            <td width="386"><input type="text" name="soundsrc" value="$soundsrc" size="37"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td valign=top width="179"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Auto-response:</font></b></td>
+            <td width="386"><input type="checkbox" name="autoresp" $autoresp>
+            <font face="Arial" size="2" color="#396BB5">Enable</font><br>
+            <font face="Arial" size="2" color="#396BB5">Message</font><br>
+            <textarea rows="3" name="autorespmsg" cols="40">$autorespmsg</textarea>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" height="20" width="565">&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <p align="center"><input type="image" border="0" src="${IMGDIR}bluesave.gif" width="82" height="22" alt="Save Setting" name="action_change"> <a href="javascript:parent.close();"><img border="0" src="${IMGDIR}blueclose.gif" width="82" height="22" alt="Exit Preference" name="action_close"></a>
+</td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+	</form>
+        </table>
+        </center>
+      </div>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+EOM
+
+if ($changed || $pwdchanged)
+{
+	print <<EOM;
+<script>
+<!--
+	if (top.opener && !top.opener.closed)
+	{
+		top.status = top.opener.name;
+		top.opener.top.location.reload();
+	}
+EOM
+    if ($pwdchanged)
+    {
+	print <<EOM;
+	top.window.close();
+EOM
+    }
+	print <<EOM;
+// -->
+</script>
+EOM
+}
+
+	print <<EOM;
+</body>
+</html>
+EOM
+
+exit 0;
+
+sub CheckPrefForm
+{
+	my ($form) = @_;
+
+	if ((defined($form->{fromname}) && $form->{fromname} ne '') ||
+	    (defined($form->{fromemail}) && $form->{fromemail} ne ''))
+	{
+		my $n = $form->{fromname};
+		my $e = $form->{fromemail};
+		$n =~ s/\s/ /g;
+		$e =~ s/\s/ /g;
+		$form->{from} = $n . "\t" . $e;
+		delete($form->{fromname});
+		delete($form->{fromemail});
+	}
+	else
+	{
+		undef $form->{fromname};
+		undef $form->{fromemail};
+		$form->{from} = '';
+	}
+
+	$form->{dspimage} = 'off' unless defined($form->{dspimage});
+
+	if (defined($form->{nopreviewframe}))
+	{
+		$form->{previewframe} = 'off';
+		delete($form->{nopreviewframe});
+	}
+	else
+	{
+		$form->{previewframe} = 'on';
+	}
+
+	#$form->{folderframe} = 'off' unless defined($form->{folderframe});
+}
+

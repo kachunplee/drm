@@ -1,0 +1,62 @@
+#! /usr/bin/perl
+
+use CGI qw(:standard);
+use strict;
+
+use drmdef;
+
+require 'conf.ph';
+
+$| = 1;
+print header;
+
+print <<EOM;
+<html>
+<head>
+<script src=${JSDIR}drmwin.js></script>
+</head>
+<body>
+<table border=0 cellpadding=0 cellspacing=0 width=100%>
+<tr>
+<td align=left width=330 height=31>
+<map name=LogoMap>
+	<area href="/cgi-bin/ulogout" alt="Logout" target=_top
+	shape=rect coords="176, 14, 232, 30"></map>
+	<img border=0 src=${IMGDIR}logo_logout.gif usemap="#LogoMap" width=233 height=31></td>
+<td align=right height=31>
+EOM
+if ($MEMDRIVEURL ne '')
+{
+print <<EOM;
+<a href="javascript:OpenMembershipDriveWin('$MEMDRIVEURL')"><img align=middle border=0 src=${IMGDIR}membership_drive3.gif width=140 height=24></a></td>
+EOM
+}
+else
+{
+print <<EOM;
+<img border="0" src="${IMGDIR}spacer_1pixel.gif" width="1" height="1"></td>
+EOM
+}
+print <<EOM;
+</tr>
+<tr>
+<td colspan=2 bgcolor="#3A6BB7" height="3"><img border="0" src="${IMGDIR}spacer_1pixel.gif" width="1" height="1"></td>
+</tr>
+<tr>
+<td colspan=2 bgcolor="#3173CE" height="1"><img border="0" src="${IMGDIR}spacer_1pixel.gif" width="1" height="1"></td>
+</tr>
+<tr>
+<td colspan=2 bgcolor="#3A6BB7"><a href="javascript:parent.DRMLstControl.document.location.reload()" alt="Check Mail"><img border="0" src="${IMGDIR}toolcheckmail.gif" width="91" height="20"></a><a href="javascript:OpenComposeWin('compose')" alt="Mail"><img border="0" src="${IMGDIR}toolnewmessage.gif" width="104" height="20"></a><a href="javascript:OpenPrefWin('drmpref')" alt="Preferences"><img border="0" src="${IMGDIR}toolpreferences.gif" width="98" height="20"></a><a href=/acc/user_global.asp alt="Spamhippo" target=_top><img border="0" src="${IMGDIR}drm_spamhippo.gif" width=107 height="20"></a><a href="javascript:OpenAddBookWin('drmaddbk')" alt="Address Book"><img border="0" src="${IMGDIR}tooladdbook.gif" width=112 height=20></a><a href="javascript:OpenHelpWin('/drm/drmhelp.html')" alt="Help"><img border="0" src="${IMGDIR}toolhelp.gif" width="63" height="20"></td>
+</tr>
+<tr>
+<td colspan=2 bgcolor="#183963" height="1"><img border="0" src="${IMGDIR}spacer_1pixel.gif" width="1" height="1"></td>
+</tr>
+<tr>
+<td colspan=2 bgcolor="#3A6BB7" height="2"><img border="0" src="${IMGDIR}spacer_1pixel.gif" width="1" height="1"></td>
+</tr>
+</table>
+</body>
+</html>
+EOM
+
+exit 0;

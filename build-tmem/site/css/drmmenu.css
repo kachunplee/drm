@@ -1,0 +1,154 @@
+#titleMsg {
+   height: 23px;
+   text-align: right;
+   font-size: 80%;
+   color: #024db7;
+   padding-top: 20px;
+}
+
+#titleImage {
+  height:108px;
+  width: 110px;
+}
+
+#stitleImage {
+  height: 60px;
+  width: 61px;
+}
+
+#titleBar {
+  height: 28px;
+  padding: 5px 0 0 0;
+  margin: 0;
+}
+
+#stitleBar {
+  height: 28px;
+  padding: 5px 0 0 0;
+  margin: 0;
+}
+
+#mainMenu {
+  color: #FFFFFF;
+  margin: 0;
+  padding: 4px 0px 5px 0px;
+}
+
+#menuRetrieval {
+  margin: 0;
+  padding: 0;
+}
+
+.menuList {
+  margin: 0px;
+  padding: 0px;
+}
+
+.menuList ul {
+  margin: 0px;
+  padding: 3px 0px 4px 0px;
+}
+
+.menuList li {
+  display: inline;
+  list-style: none;
+}
+
+a.selector {
+  background-color: transparent;
+  color: #FFFFFF;
+  font-size: 12px;
+  margin: 0px;
+  padding: 3px 6px;
+  text-decoration: none;
+}
+
+a.selector:active {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+a.selector:visited {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+a.selector:hover {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
+.menu {
+  color: #FFFFFF;
+  background-color: #9DC9FD;
+  border: 1px solid #21599C;
+  position: absolute;
+  visibility: hidden;
+}
+
+.menu ul {
+  padding: 0.2em 0 0.2em 0;
+}
+
+.menu li {
+  display: inline
+}
+
+.menu li a {
+  display: block;
+  padding: 0 0.5em 0 0.5em;
+  background-color: transparent;
+  color: #21599C;
+  font-size: 12px;
+  margin: 0px;
+  text-decoration: none;
+  border-width:0;
+}
+
+.menu li a:visited {
+  color: #21599C;
+  text-decoration: none;
+}
+
+.menu li a:active {
+  color: #21599C;
+  text-decoration: none;
+}
+
+.menu li a:hover {
+  background-color: #C7E1FE;
+  color: #21599C;
+  font-weight: bold;
+}
+
+.menuForm {
+  padding: 5px;
+  display: block;
+  list-style: none;
+  color: #21599C;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.menuItem {
+  display: block;
+  color: #555555;
+  padding: 0 0.5em 0 0.5em;
+  font-size: 12px;
+  margin: 0px;
+}
+
+.menuDiv {
+  display: block;
+  margin: 3px 0 2px 0;
+  height: 1px;
+  width: 50px;
+  font-size: 1px;
+  border: solid;
+  border-color: #21599C;
+  border-width: 1px 0 0 0;
+}
+
+font.menutext {
+  color: #FFFFFF;
+}

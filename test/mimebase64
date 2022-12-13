@@ -1,0 +1,11 @@
+#! /usr/bin/perl
+
+use strict;
+use MIME::Base64;
+
+my $chunk;
+my $dlinsize = 57;
+while (read(STDIN, $chunk, $dlinsize) > 0)
+{
+		print encode_base64($chunk);
+}

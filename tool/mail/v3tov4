@@ -1,0 +1,60 @@
+#! /usr/bin/perl
+
+use strict;
+
+while(<>)
+{
+	chomp;
+	my $dir = $_;
+
+	print $dir, ":\n";
+	my $o = chdir $dir;
+	if (opendir DIR, '.')
+	{
+		my $maildir = "mail";
+		mkdir $maildir, 0755;
+		chown 7005, 72,  $maildir;
+
+		my $openfd = 0;
+		while (my $f = readdir DIR)
+		{
+			next if $f =~ /^[.]/;
+			next if $f =~ /[.]log$/;
+			next if $f =~ /^(mail|Folders)$/;
+
+			if ($f =~ /[.](idx|bak|old)$/)
+			{
+				print '  Delete ', $f, "\n";
+				# unlink $f;
+				next;
+			}
+
+			print '  Folder ', $f, "\n";
+			
+			link $f, $maildir . '/' . lc($f);
+
+			next if $f =~ /^(out|trash)$/;
+
+			if ($openfd == 0)
+			{
+				if (open FD, "> Folders")
+				{	
+					$openfd = 1;
+				}
+			}
+			if ($openfd)
+			{
+				print FD lc($f), "\n";
+			}
+		}
+
+		if ($openfd)
+		{
+			close FD;
+			chown 7005, 72, 'Folders';
+		}
+
+		closedir DIR;
+	}
+	chdir $o;
+}

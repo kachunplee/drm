@@ -1,0 +1,19 @@
+
+
+if (e.which)
+{
+	if (e.which == 3)
+		return true;
+
+	// non-IE right mouse click
+}
+else
+{
+	if (event.button == 2)
+		return true;
+
+	// IE right mouse click
+}
+
+// Do right mouse click
+return false;

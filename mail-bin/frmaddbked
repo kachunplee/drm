@@ -1,0 +1,212 @@
+#! /usr/bin/perl
+
+$! = 1;
+print 'Content-Type: text/html', "\n\n";
+
+#
+use strict;
+
+use drmdef;
+require "drmpref.ph";
+use vars qw($MAILHOME);
+
+my $chgprefprog = 'frmaddbkmn';
+
+my $user=$ENV{REMOTE_USER};
+my $server=$ENV{SERVER_NAME};
+if($user eq "")
+{
+	print "<h3>No user selected</h3>\n";
+	exit;
+}
+
+#
+#
+my $userDir = "$MAILHOME/$user";
+my $aliasrc = "$MAILHOME/$user/.aliasrc";
+
+#
+my (%RC, %FORM);
+my $mtime;
+my ($user, $addrs);
+
+my $edit = 0;
+my $todo = "Add";
+
+if ($ARGV[0] eq '-a' && $ARGV[1] ne '')
+{
+	$addrs = $ARGV[1];
+	$addrs =~ s/,/\n/g;
+}
+elsif ($ARGV[1] ne '')
+{
+	$edit = 1;
+	$todo = "Edit";
+	$user = $ARGV[1];
+	$mtime = ReadRC($aliasrc, \%RC);
+	my $key = $user . ':';
+	if (not defined($RC{$key}))
+	{
+		print "<h3>Contact <i>$user</i> is not defined</h3>";
+		exit 1;
+	}
+
+	$addrs = $RC{$key};
+	$addrs =~ s/\&/&amp;/g;
+	$addrs =~ s/\</&lt;/g;
+	$addrs =~ s/\>/&gt;/g;
+	$addrs =~ s/,/\n/g;
+}
+
+	print <<EOM;
+<html>
+
+<head>
+<title>Edit Address Book</title>
+<script>
+function initForm ()
+{
+	var fromEmail = top.opener.document.getElementById('fromEmail');
+	if (fromEmail)
+	{
+		var fromStg = fromEmail.value;
+		fromStg.replace(/,/g, "\\n");
+		document.formAddbk.addresses.value = fromStg;
+	}
+}
+
+function NickCancel ()
+{
+	parent.location.href = "drmaddbk";
+}
+</script>
+
+<!--webbot BOT="GeneratedScript" PREVIEW=" " startspan --><script Language="JavaScript"><!--
+function Form1_Validator(theForm)
+{
+  if (theForm.nickname.value == "")
+  {
+    alert("Please enter a value for the \\\"Contact Name\\\" field.");
+    theForm.nickname.focus();
+    return (false);
+  }
+
+  var s = new String(theForm.nickname.value);
+  if (s.search(/:/) >= 0)
+  {
+    alert("Tthe \\\"Contact Name\\\" field cannot contain any ':' character.");
+    theForm.nickname.focus();
+    return (false);
+  }
+
+  if (theForm.addresses.value == "")
+  {
+    alert("Please enter a value for the \\\"Address(es)\\\" field.");
+    theForm.addresses.focus();
+    return (false);
+  }
+
+  return (true);
+}
+//--></script><!--webbot BOT="GeneratedScript" endspan -->
+</head>
+
+<body onload='javascript:initForm()'>
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+    <tr>
+      <td><img border="0" src="${IMGDIR}spacerwhite.gif" width="25" height="7"></td>
+    </tr>
+    <tr>
+      <td><img border="0" src="${IMGDIR}spacerwhite.gif" width="25" height="7"></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<div align="center">
+  <center>
+  <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#396BB5" width="575">
+    <tr>
+      <td bgcolor="#EAEFF8" height="21">
+      <font face="Arial" size="2" color="#396BB5"><b>&nbsp;</b></font><b><font face="Arial" size="2" color="#396BB5"> 
+      $todo a Contact:</font></b></td>
+    </tr>
+    <tr>
+      <td>
+      <div align="center">
+        <center>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="565">
+    	  <form method=POST onsubmit="return Form1_Validator(this)" name=formAddbk action=$chgprefprog>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td width="178"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Contact Name:</font></b></td>
+            <td width="387"><!--webbot bot="Validation" B-Value-Required="TRUE" --><input type="text" name="nickname" value="$user" size="27">
+EOM
+
+if ($edit)
+{
+	print <<EOM;
+            <input type="hidden" name="oldname" value="$user">
+EOM
+}
+
+	print <<EOM;
+	  </td>
+          </tr>
+          <tr>
+            <td width="178" valign="top"><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Address(es):</font></b></td>
+            <td width="387" valign="top"><!--webbot bot="Validation" B-Value-Required="TRUE" --><textarea rows="4" name="addresses" cols="38">$addrs</textarea><br>
+            <font face="Arial" size="1" color="#396BB5">For multiple address entries, please enter one email address per line.</font></td>
+          </tr>
+          <tr>
+            <td colspan="2" height="20" width="565">&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <p align="center"><input type=image border=0 src=${IMGDIR}bluesave.gif width=82 height=22 alt="Save Setting" name=action_nicksave>
+EOM
+
+if ($edit)
+{
+	print <<EOM;
+<a href="javascript:NickCancel();"><img border=0 src=${IMGDIR}bluecancel.gif width=82 height=22 alt="Cancel Setting" name=action_nickcancel></a>
+EOM
+}
+
+print <<EOM;
+</td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2" width="565">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+	</form>
+        </table>
+        </center>
+      </div>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+</body>
+</html>
+EOM
+
+exit 0;

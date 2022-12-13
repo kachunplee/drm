@@ -1,0 +1,167 @@
+#! /var/local/bin/perl
+
+use strict;
+
+use Fcntl;
+use DB_File;
+
+my $ext = ($ARGV[0] eq '') ? '0' : shift;
+my $filterlog = '/var/log/procmail.log.' . $ext . '.gz';
+my $filterreport = '/var/log/procmailreport.' . $ext;
+my $filteridx = '/var/log/procmailidx_' . $ext . '.db';
+my $errorlog = "/var/log/procmail.err";
+
+unless (open(LOG, "zcat $filterlog|"))
+{
+	print "genfilterlog: cannot open $filterlog file\n";
+	exit(1);
+}
+
+unless (open(REPORT, "> $filterreport"))
+{
+	print "genfilterlog: cannot open $filterreport file\n";
+	close(LOG);
+	exit(1);
+}
+
+unless (open(ERR, "> $errorlog"))
+{
+	print "genfilterlog: cannot open $errorlog file\n";
+	close(REPORT);
+	close(LOG);
+	exit(1);
+}
+
+my %IDXDB;
+tie (%IDXDB, "DB_File", $filteridx, O_CREAT|O_RDWR, 0644, $DB_BTREE) ||
+	die 'genfilterlog: cannot create DB ', $filteridx, ': ', $!, "\n";
+
+my $dbfile = "/var/local/mail/alan/filter.db";
+my %DB;
+unless (tie (%DB, "DB_File", "$dbfile", O_RDWR))
+{
+	print "genfilterlog: cannot open DB $dbfile\n";
+	close(ERR);
+	close(REPORT);
+	close(LOG);
+	exit(1);
+}
+
+my (%filters) = ();
+my (%fltrules) = ();
+my ($filter, $rule, $what);
+my ($typestg, $rulestg, $key, $value, @f, $dbtime);
+my ($date, $who, $subject);
+
+my $l = 0;
+while(<LOG>)
+{
+	chomp;
+	if (/^(\d+)-(\d+)\s+From\s+(.*)/)
+	{
+		$filter = $1;
+		$rule = $2;
+		($who, $date) = split(/ +/, $3, 2);
+
+		$_ = <LOG>;
+		chomp;
+		next unless(/ Subject: (.*)$/);
+		$subject = $1;
+
+		$_ = <LOG>;
+		chomp;
+		next unless(/  Folder: (.*)$/);
+		$_ = $1;
+		s/\s+\S+$//;
+		if(/\/var\/mail/)
+		{
+			$what="";
+		}
+		elsif(/\/dev\/null/)
+		{
+			$what="Filtered";
+		}
+		elsif(/sendmail -oi (.*)$/)
+		{
+			$what=$1;
+		}
+		else
+		{
+			$what=$_;
+		}
+		next if ($what ne 'Filtered');
+
+		$value = $DB{$filter};
+		if (!defined($value) || $value eq '')
+		{
+			print ERR "Missing filter $filter\n";
+			next;
+		}
+		($dbtime, $typestg) = split(/\s+/, $value, 2);
+		
+		$key = $filter . '-' . $rule;
+		$value = $DB{$key};
+		if (!defined($value) || $value eq '')
+		{
+			print ERR "Missing rule $key\n";
+			next;
+		}
+
+		($dbtime, $rulestg) = split(/\s+/, $value, 2);
+		$filters{$typestg}{$rulestg}++;
+		$fltrules{$typestg}{$filter}++;
+
+		$date =~ s/^\S+\s+//;
+		$date =~ s/:..\s+\S+$//;
+		$IDXDB{sprintf("%s.%07d", $key, ++$l)} =
+			join("\n", ($date, $who, $subject));
+	}
+}
+close (LOG);
+
+my ($stg, $count);
+foreach $typestg (keys %filters)
+{
+	my $fids = join(',', sort keys %{$fltrules{$typestg}});
+
+	($fids ne '') ||
+		die 'Emptry filter rules: ', $typestg, "\n";
+
+	my (%report) = ();
+	foreach $rulestg (sort keys %{$filters{$typestg}})
+	{
+		$stg = sprintf("%08d %s", $filters{$typestg}{$rulestg},
+			$rulestg);
+		$report{$stg} = $typestg . "\t" .  $fids;
+	}
+	foreach $key (sort {$b <=> $a} keys %report)
+	{
+		($count, $rulestg) = split(/ /, $key, 2);
+		$count += 0;
+		print REPORT $report{$key}, "\t", $count, "\t", $rulestg, "\n";
+	}
+}
+
+close(ERR);
+close(REPORT);
+
+# expire the obsoleted filters that are > 20 days in alan mailbox
+
+my $t_exp = time;
+$t_exp -= (60 * 60 * 24 * 20);
+my ($key, $date, $value);
+foreach $key (%DB)
+{
+	($date, $value) = split(/\s+/, $DB{$key}, 2);
+	if ($date =~ /^d(\d+)$/)
+	{
+		if ($1 < $t_exp)
+		{
+			delete $DB{$key};
+		}
+	}
+}
+untie(%DB);
+untie %IDXDB;
+
+exit(0);

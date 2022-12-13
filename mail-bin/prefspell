@@ -1,0 +1,263 @@
+#! /usr/bin/perl
+
+use Fcntl;
+use DB_File;
+use CGI;
+
+use strict;
+use drmdef;
+
+require "drmspell.ph";
+
+my $cgi = new CGI;
+my $env = \%ENV;
+
+my $CID = '@GLOBAL';
+
+#
+my $userid = $env->{REMOTE_USER};
+
+my $prefdir = "/var/local/mail/";
+
+#
+# If program accessing by name 'globspell', and user is admin,
+# use global files.
+#
+my $type = "Personal";
+my $prog = $0;
+$prog =~ s/^.*\///;
+
+my ($dictserver, $remotefile, $remotedir);
+print STDERR $0, ' ', $prog, "\n";
+if ($prog =~ /^glob/)
+{
+	if ($ENV{NG_ADMIN})
+	{
+		print STDERR $userid, ' accessing ', $0, "\n";
+		$type = "Global";
+		$prefdir = $prefdir . $CID;
+		$dictserver = $DICTSERVER;
+		$remotedir = GetDictDataDir($MASTERID) . 'global';
+		$remotefile = $remotedir . '/aspell';
+	}
+	else
+	{
+		$type = "";
+		$prefdir = $prefdir . $userid;
+	}
+}
+else
+{
+	$prefdir = $prefdir . $userid;
+	$dictserver = $DRNSERVER;
+	$remotedir = GetDictDataDir($MASTERID) . "user/$userid";
+	$remotefile = $remotedir . "/aspell";
+}
+
+my $dctdb = $prefdir . '/aspell.db';
+my $dctf = $prefdir . '/aspell.per';
+
+CheckDictionary($prefdir, $prefdir."/aspell", $dictserver, $remotefile);
+
+#
+my $isPref = (($ENV{"PL_AUTH_ID"} eq "") || ($userid =~ /\@/));
+
+eval {
+   print <<EOM;
+Content-type: text/html
+
+<html>
+<head>
+<title>Direct Read Mail (tm) - Spell Checker Preference</title>
+<link rel=stylesheet text=text/css href=${CSSDIR}drmlayout.css>
+<link rel=stylesheet text=text/css href=${CSSDIR}drmmenu.css>
+</head>
+<body>
+EOM
+
+   my $help = $HTDIR . 'prefhelp.html';
+   print <<EOM;	#------------------------------------------- 
+<div id="stitleBar"><img src="/drm/img/toolbartop.gif" height="28" width="100%"></div>
+<div id="mainMenu" class="mainMenu" style="background-image:url('/drm/img/menubg.gif');">
+<div style="margin:0; padding: 4px 15px 0 80px;">
+<ul id="menuList1" class="menuList">
+<li>
+<a class="selector" href="javascript:window.back()"><b>Back</b></a>
+</li>
+| <li>
+<a class="selector" href="$help"><b>Help</b></a>
+</li>
+</ul>
+</div>
+</div>
+<div style="position:absolute;top:0;left:10px;"><img id="stitleImage" src="/drm/img/stitlelogo.gif" border=0></div>
+EOM
+
+   if ($type eq "")
+   {
+	print "<h3>No permission to access global settings. Please contact support for more info...</h3>\n";
+   }
+   elsif (not $isPref)
+   {
+	print "<h3>$type dictionary not supported with your account. Please contact support for more info...</h3>\n";
+   }
+   else
+   {
+   	print "<h3>$type Dictionary</h3>";
+   	OutBody();
+   }
+
+   print <<EOM;
+</body></html>
+EOM
+};
+
+if ($@)
+{
+	print STDERR 'prefspell: unexpected error: ', $@, "\n";
+	exit 1;
+}
+
+
+exit;
+
+sub OutBody ()
+{
+    my $action = $cgi->param('submit');
+    if ($action)
+    {
+    	my %DICT;
+
+	print STDERR $userid, ': prefspell ', $action, "\n";
+
+	my @params = $cgi->param;
+   	foreach my $q (@params)
+   	{
+		print STDERR $q, "=", $cgi->param($q), "\n";
+   	}
+
+   	my $r = tie %DICT, 'DB_File', $dctdb, O_RDWR|O_CREAT;
+   	if (not $r) {
+		print STDERR $userid, ': Cannot update ', $dctdb, ": $!\n";
+		die "Cannot update DB\n";
+   	}
+
+	my $change = 0;
+	if ($action eq "Add")
+	{
+		foreach my $word (split(/\n/, $cgi->param('entries')))
+		{
+			$word =~ s/[^a-zA-Z0-9]//g;
+			next if $word =~ /^\s*$/;
+
+			my $add = sprintf("%010d", time);
+			$DICT{$word} = $add;
+			print STDERR $word, '<-', $add, "\n";
+			$change++;
+		}
+	}
+	elsif ($action eq "Delete")
+	{
+   		foreach my $q (@params)
+		{
+			if ($cgi->param($q) eq "on")
+			{
+				print STDERR 'Deleting ', $q, "\n";
+				$r->del($q);				
+				$change++;
+			}
+		}
+	}
+
+	if ($change > 0)
+	{
+		if (not open (DICTF, "> $dctf.n"))
+		{
+		    print STDERR "Cannot create ", $dctf, ".n: $!\n";
+		}
+		else
+		{
+		    my $error = 0;
+
+		    my $now = time;
+		    if ($dictserver)
+		    {
+			print STDERR "rsh -t 60 $dictserver /usr/local/sbin/updatedict $remotedir $remotefile $now", "\n";
+			if (not open(REMOTE, "| rsh -t 60 $dictserver /usr/local/sbin/updatedict $remotedir $remotefile $now"))
+			{
+				$dictserver = '';
+				print STDERR "prefspell: Cannot update $remotefile: $!\n";
+			}
+		    }
+
+		    my @keys = sort keys %DICT;
+		    # out title
+		    if (not print DICTF 'personal_ws-1.1 en ',
+				scalar(@keys), "\n")
+		    {
+			print STDERR "write error: $!\n";
+			++$error;
+		    }
+
+		    foreach my $key (@keys)
+		    {
+			if ($dictserver ne '')
+			{
+				print REMOTE $key, ' ', $DICT{$key}, "\n";
+			}
+			if (not print DICTF $key, "\n")
+			{
+				print STDERR "write error: $!\n";
+				++$error;
+			}
+		    }
+
+		    if ($dictserver)
+		    {
+			print REMOTE '--END--', "\n"; 
+		    	close REMOTE;
+		    }
+
+		    close DICTF || ++$error;
+		    utime($now, $now, "$dctf.n");
+		    utime($now, $now, $dctdb);
+		    if ($error == 0)
+		    {
+			rename $dctf, "$dctf.o";
+			rename "$dctf.n", $dctf;
+		    }
+		}
+	}
+
+	untie %DICT;
+   }
+
+   print <<EOM;
+<form method=POST>
+<textarea name=entries row="5" cols="20">
+</textarea>
+<br>
+<input type=submit name=submit value=Add>
+</form>
+<hr>
+<form method=POST>
+EOM
+    my $n = 0;
+    my %DB;
+    my $r = tie %DB, 'DB_File', $dctdb, O_RDONLY;
+    if ($r) {
+	foreach my $key (sort keys %DB) {
+		print "<input type=checkbox name=\"$key\"> $key<br>\n";
+		$n++;
+   		untie %DB;
+	}
+    }
+
+    if ($n > 0)
+    {
+	print <<EOM;
+<br>
+<input type=submit name=submit value=Delete>
+EOM
+    }
+}

@@ -1,0 +1,93 @@
+#! /usr/bin/perl
+
+use strict;
+
+my $dir = "/var/tmp/mail";
+
+my (@pwdent) = getpwnam('http');
+opendir(MAIL, $dir);
+my ($user, $maildir);
+while($user = readdir(MAIL))
+{
+	if ($user eq '.' || $user eq '..')
+	{
+		next;
+	}
+
+	my (@u) = getpwnam($user);
+	if (!defined($u[0]) || $u[0] ne $user)
+	{
+		print "$user\n";
+		next;
+	}
+
+	$maildir = "$dir/$user/mail";
+	if (! -d $maildir)
+	{
+		mkdir($maildir, 0766);
+		chown($pwdent[2], $pwdent[3], $maildir);
+	}
+
+	linkfile($dir, $user, 'trash', 0);
+	linkfile($dir, $user, 'out', 0);
+	linkfile($dir, $user, 'save', 1);
+
+	# scan .formrc and look for pop accounts
+}
+
+closedir(MAIL);
+exit;
+
+sub linkfile
+{
+	my ($dir, $user, $filename, $bFolder) = @_;
+
+	if (-f "$dir/$user/$filename")
+	{
+		link("$dir/$user/$filename", "$dir/$user/mail/$filename");
+		if ($bFolder)
+		{
+			f_add_line("$dir/$user/Folders", $filename);
+		}
+	}
+}
+
+sub f_add_line
+{
+	my ($file, $line) = @_;
+
+	my $tmpfile = $file . ".$$";
+
+	open(ORIGFILE, $file) || die("Cannot open $file\n");
+	open(OUTFILE, ">$tmpfile") || die("Cannot open $tmpfile\n");
+	flock(ORIGFILE, 2);
+
+	my $cmp = -1;
+	my $find = 0;
+	while (<ORIGFILE>)
+	{
+		chop;
+		if ($cmp < 0)
+		{
+			$cmp = ($_ cmp $line);
+			$find = 1 if ($cmp == 0);
+			print OUTFILE $line, "\n" if ($cmp > 0)
+		}
+
+		print OUTFILE $_, "\n";
+	}
+
+	print OUTFILE $line, "\n" if ($cmp < 0);
+
+	close OUTFILE;
+	close ORIGFILE;
+
+	if ($find)
+	{
+		unlink($tmpfile);
+	}
+	else
+	{
+		rename($tmpfile, $file);
+	}
+}

@@ -1,0 +1,59 @@
+- Main frame
+  * check for REMOTE_USER not define
+
+v- Frame
+v  * Enable Folder frame
+v  * Enable Preview frame
+v	- click on list subject update preview
+	  if disable, click on list subject open mail
+
+v- Control bar
+v  * [New Message] [Prefereneces] [Email Filters] [Help] -> open window
+v  * [Check Email] -> list frame
+
+v- Folder
+v  * New
+v  * Delete
+v  * Rename
+
+v- POP accounts
+
+v- Mail Frame
+v  * command flags for preview and open article
+v	+ preview -> no header/footer, w/ open mail buttion
+v	+ open    -> header/footer, update envelop
+
+v- Compose Mail
+
+v- Spam Filter
+
+v- Preference
+v  * add/rename folder when add/edit POPs
+v  * make sure POP acc cannot direct to in/out
+
+-----------------------------------------
+done
+v- turn off link underline in frmfolder, frmlstctrl and frmlstdsp
+v- limit number of folders in addfolder
+v- reload frmfolder after mailxfer (pull mails)
+v- not show add/rename folder in float menu for builtin folders (in/out/trash)
+v- check pop mail on mail tool bar 
+v- after xfer, the in box is owned by root - typo in mailxfer.cpp
+v- remove folder content when folder is deleted
+
+fix:
+- make sure transfer to a valid mail box
+- change status graphic in frmlist when open message
+- mail count is off in MailList
+
+nice:
+- close folder float menu when blur
+- move to a different directory... coexist with old version.
+- disable right mouse click
+- preview first unread mail automatically
+- make index for mailbox
+- logout in popup window should logout at opener.top
+- auto reload after pref change
+- update the dest read/unread count during xfer
+- say folder not exist rather than no mail when run wwwmail?badfolder
+- save message window size

@@ -1,0 +1,260 @@
+#! /var/local/bin/perl
+
+use strict;
+
+use Fcntl;
+use DB_File;
+
+my $dbfile = "/var/local/mail/alan/filter.db";
+
+$| = 1;
+
+print <<EOM; #---------------------------------
+Content-Type: text/html
+
+<html>
+<head>
+<title>Email Spam Filter Log Details</title>
+</head>
+<body> 
+EOM
+
+my $day = $ARGV[0];
+if ($day eq '')
+{
+	$day = 0;
+}
+shift;
+
+my @fids = ();
+my $reqfilter = $ARGV[0];
+if (defined($reqfilter) && $reqfilter ne '')
+{
+	@fids = split(/,/, $reqfilter);
+}
+
+my ($sday, $eday, $i);
+if ($day eq 'a')
+{
+	$sday = 0;
+	$eday = 6;
+} 
+else
+{
+	$sday = $eday = $day;
+}
+
+my %DB;
+unless (tie (%DB, "DB_File", "$dbfile", O_RDONLY))
+{
+	print <<EOM;
+Cannot display your log data details at this time.
+EOM
+	exit;
+}
+
+my ($maillog, %filters, $filterid);
+my ($key, $filter, $rule, $out);
+my ($who, $date, $subject, $what);
+my ($dbtime, $count, $details, $idx);
+my $fcount = 0;
+my (%info);
+my (%rulestg);
+
+for ($day = $sday ; $day <= $eday; $day++)
+{
+	$maillog = "/var/log/procmail.log." . $day . ".gz";
+
+	if (-z $maillog || @fids == 0)
+	{
+		print <<EOM;
+There is no log data to review at this time.
+EOM
+		exit;
+	}
+
+	if(open(LOG, "zcat $maillog | "))
+	{
+		while(<LOG>)
+		{
+			chomp;
+			if (/^(\d+)-(\d+)\s+From\s+(.*)/)
+			{
+				$filter = $1;
+				$rule = $2;
+				($who, $date) = split(/ +/, $3, 2);
+
+				if (0 >= grep { $_ == $filter } @fids)
+				{
+					next;
+				}
+
+				$date =~ s/^\S+\s+//;
+				$date =~ s/:..\s+\S+$//;
+				$_ = <LOG>;
+				chomp;
+				next unless(/ Subject: (.*)$/);
+				$subject = $1;
+
+				$_ = <LOG>;
+				chomp;
+				next unless(/  Folder: (.*)$/);
+				$_ = $1;
+				s/\s+\S+$//;
+				if(/\/var\/mail/)
+				{
+					$what="";
+				}
+				elsif(/\/dev\/null/)
+				{
+					$what="Filtered";
+				}
+				elsif(/sendmail -oi (.*)$/)
+				{
+					$what=$1;
+				}
+				else
+				{
+					$what=$_;
+				}
+				next if ($what ne 'Filtered');
+
+				$filterid = $filter . '-' . $rule;
+				if (!defined($DB{$filterid}) ||
+					$DB{$filterid} eq '')
+				{
+					next;
+				}
+				($dbtime, $rule) = split(/\s+/, $DB{$filterid}, 2);
+				$rule =~ s/&/&amp;/g;
+				$rule =~ s/</&lt;/g;
+				$rule =~ s/>/&gt;/g;
+				if (defined($filters{$rule}))
+				{
+					$filters{$rule}++;
+				}
+				else
+				{
+					$filters{$rule} = 1;
+				}
+				$idx = $filters{$rule} - 1;
+				$info{$rule}{$idx}{'date'} = $date;
+				$info{$rule}{$idx}{'who'} = $who;
+				$info{$rule}{$idx}{'subj'} = $subject;
+				$fcount++;
+			}
+		}
+		close LOG;
+	}
+}
+
+print <<EOM;
+<h2><font face=Arial color=#26589E>Email Spam Filter Log Details</font></h2>
+<div align="center">
+  <center>
+  <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#26589E" width="575">
+    <tr>
+      <td bgcolor="#FEFAE7" height="21">
+        <center>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+          <tr>
+            <td width="117">&nbsp; <b>
+            <font face="Arial" size="2" color="#26589E">Date &amp; Time:</font></b></td>
+            <td width="458"><b><font face="Arial" size="2" color="#26589E">
+            Details:</font></b></td>
+          </tr>
+        </table>
+        </center>
+      </td>
+    </tr>
+    <tr>
+      <td>
+      <div align="center">
+        <center>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+          <tr>
+            <td colspan="2" height=14>
+            <img border="0" src="/drm/spacer_1pixel.gif" width="1" height="1"></td>
+          </tr>
+EOM
+
+if ($fcount > 0)
+{
+	$out = 0;
+	foreach $rule (sort by_values keys %filters)
+	{
+		if ($out > 0)
+		{
+			print <<EOM;
+          <tr>
+            <td width="575" colspan="2" height="25">
+            <hr color="#26589E" width="97%" noshade size="1">
+            </td>
+          </tr>
+EOM
+		}
+		$count = $filters{$rule};
+		print <<EOM;
+          <tr>
+            <td width="118" valign="top">&nbsp;
+            <font face="Arial" size="2" color="#26589E">$count</font></td>
+            <td width="457" valign="top">
+            <font face="Arial" size="2" color="#26589E">$rule</font></td>
+          </tr>
+          <tr>
+            <td width="118" valign="top">&nbsp;</td>
+            <td width="457" valign="top">
+            &nbsp;</td>
+          </tr>
+EOM
+		for($idx = 0; $idx < $count; $idx++)
+		{
+			$date = $info{$rule}{$idx}{'date'};
+			$who = $info{$rule}{$idx}{'who'};
+			$subject = $info{$rule}{$idx}{'subj'};
+			print <<EOM;
+          <tr>
+            <td width="118" valign="top">&nbsp;
+            <font face="Arial" size="2" color="#26589E">$date</font></td>
+            <td width="457" valign="top">
+            <font face="Arial" size="2" color="#26589E">$who<br>
+            $subject</font></td>
+          </tr>
+EOM
+		}
+		$out++;
+	}
+}
+else
+{
+	print <<EOM;
+          <tr>
+            <td>
+            <p align="center"><b><font face="Arial" size="2" color="#26589E">There is 
+      no log data to review at this time.</font></b></td>
+          </tr>
+EOM
+}
+
+print <<EOM;
+          <tr>
+            <td colspan="2" height=14>
+            <img border="0" src="/drm/spacer_1pixel.gif" width="1" height="1"></td>
+          </tr>
+        </table>
+        </center>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+</body></html>
+EOM
+
+untie %DB;
+
+exit(0);
+
+sub by_values {
+	$filters{$b} <=> $filters{$a}
+}

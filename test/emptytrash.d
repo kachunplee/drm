@@ -1,0 +1,1 @@
+mboxname=trash&actiontype=emptytrash&

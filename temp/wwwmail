@@ -1,0 +1,160 @@
+#! /usr/bin/perl
+
+use CGI qw(:standard);
+use strict;
+
+use drmdef;
+use drmsettings;
+
+my $BORDER = 1;
+
+my $CTRLHEIGHT = 60;
+my $FOLDERWIDTH = 150;
+
+my $LCTRLHEIGHT = 56;
+my $LISTHEIGHT = '30%';
+my $HEADERHEIGHT = '50';
+
+GetSettings();
+
+$| = 1;
+print header;
+
+print <<EOM;
+<head>
+<script language=javascript>
+<!--
+var listSelectAll = false;
+var currentFolder = 'in';
+var frmfolderHead = new Array('<html>',
+	'<head>',
+	'<link rel="stylesheet" type="text/css" href="/drm/drm.css" title="Style">',
+	'<style type="text/css">',
+	'<!--',
+	'    a.cFolder:link, a.cFolder:active, a.cFolder:visited {color: #26589E; text-decoration: none}',
+	'    a.cFolder:hover {color: #F7D600}',
+	'//-->',
+	'</style>',
+	'<script language=javascript src=/drm/floatmenu.js><\\/script>',
+	'<script language=javascript src=/drm/foldermenu.js><\\/script>',
+	'<script language=javascript src=/drm/drmwin.js><\\/script>',
+	'<script>',
+	'<!--',
+	'var loaded = 0;',
+	'var foldercount = 3;',
+	'var maxcount = 20;',
+	'//-->',
+	'<\\/script>',
+	'</head>',
+	'<body onload="InitMenu()" link="#326698" vlink="#326698" alink="#326698" bgcolor="#FFFFFF"> ',
+	'<table border="0" cellpadding="0" cellspacing="0" width=148>',
+	'<tr>',
+	'<td colspan="2" bgcolor="#FCF6D0" height="25">',
+	'&nbsp;<a href="javascript:NewFolder()" title="Add New Folder"><img src="/drm/addfolder.gif" border="0" title="Add New Folder" width="31" height="18"></a><a href="javascript:EmptyTrash()" title="Empty Trash"><img border="0" src="/drm/emptytrash.gif" title="Emtpy Trash" width="29" height=18></a></td>',
+	'</tr>',
+	'</table>',
+	'<p>',
+	'<font face="Verdana, Arial, Helvetica" size=1 color=#719EDD>'
+);
+
+var frmfolderTail = new Array('</font>',
+	'<script>',
+	'<!--',
+	'	var menuName = "BFolder";',
+	'	BeginMenu(menuName, 90, "#6A97D9");',
+	'		MenuItem(menuName, "Open Folder", "Open Folder",',
+	'			"javascript:OpenFolder()");',
+	'		MenuItem(menuName, "Transfer Selected List", "Xfer Selected",',
+	'			"javascript:TransferSelected()");',
+	'		MenuItem(menuName, "Transfer Preview Mail", "Xfer Preview",',
+	'			"javascript:TransferPreview()");',
+	'	EndMenu();',
+	'',
+	'	var menuName = "Folder";',
+	'	BeginMenu(menuName, 90, "#6A97D9");',
+	'		MenuItem(menuName, "Open Folder", "Open Folder",',
+	'			"javascript:OpenFolder()");',
+	'		MenuItem(menuName, "Transfer Selected List", "Xfer Selected",',
+	'			"javascript:TransferSelected()");',
+	'		MenuItem(menuName, "Transfer Preview Mail", "Xfer Preview",',
+	'			"javascript:TransferPreview()");',
+	'		MenuItem(menuName, "Rename Folder", "Rename...",',
+	'			"javascript:RenameFolder()");',
+	'		MenuItem(menuName, "Delete Folder", "Delete...",',
+	'			"javascript:DeleteFolder()");',
+	'	EndMenu();',
+	'',
+	'	SetFolderImg(parent.currentFolder);',
+	'	loaded = 1;',
+	'//-->',
+	'<\\/script>',
+	'</body>',
+	'</html>'
+);
+
+function OutFolderFrm (name)
+{
+	var d = frames[1].frames[0].document;
+	alert('Out Folder ' + d.name);
+	//for(i = 0; i < frmfolderHead.length; i++)
+	//	d.writeln(frmfolderHead[i]);
+
+	//for(i = 0; i < frmfolderTail.length; i++)
+	//	d.writeln(frmfolderTail[i]);
+	d.writeln('<h3>I am here</h3>');
+	d.close();
+}
+
+//-->
+</script>
+</head>
+
+<frameset rows="$CTRLHEIGHT,*" frameborder=0 border=$BORDER bordersize=$BORDER framespacing=0 onload=OutFolderFrm('in')>
+	<noframes>
+	</noframes>
+
+	<frame name=DRMControl marginheight=0 marginwidth=0 scrolling=no NORESIZE src=/mail/frmctrl>
+EOM
+
+my $FOLDER=$ARGV[0] ? '?' . $ARGV[0] : '';
+
+if ($folderframe)
+{
+	print <<EOM;
+	<frameset cols="$FOLDERWIDTH,*" frameborder=1 border=$BORDER framespacing=0>
+		<frame name=DRMFolder marginheight=0 marginwidth=0 src="javascript:''" border=1>
+EOM
+}
+else
+{
+	print <<EOM;
+	<frameset cols="*" frameborder=1 border=$BORDER framespacing=1>
+EOM
+}
+
+if ($previewframe)
+{
+	print <<EOM;
+<frameset rows="$LCTRLHEIGHT,$LISTHEIGHT,$HEADERHEIGHT,*" framespacing=0 frameborder=0 border=0>
+	<frame name=DRMLstControl marginheight=0 marginwidth=0 scrolling=no NORESIZE src="/mail/frmlstctrl$FOLDER">
+	<frame name=DRMLstDisplay marginheight=0 marginwidth=0 src=javascript:''>
+	<frame name=DRMLstPrevHeader marginheight=0 marginwidth=0 scrolling=no src=/mail/frmlstpreview?-h>
+	<frame name=DRMLstPrevBody marginheight=5 marginwidth=5 src=/mail/frmlstpreview?-b>
+</frameset>
+EOM
+}
+else
+{
+	print <<EOM;
+<frameset rows="$LCTRLHEIGHT,*" framespacing=0 frameborder=0 border=0>
+	<frame name=DRMLstControl marginheight=0 marginwidth=0 scrolling=no NORESIZE src=/mail/frmlstctrl>
+	<frame name=DRMLstDisplay marginheight=0 marginwidth=0 src=javascript:''>
+</frameset>
+EOM
+}
+
+print <<EOM;
+		</frameset>
+	</frameset>
+</frameset>
+EOM

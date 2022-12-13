@@ -1,0 +1,163 @@
+# -I. -I.. -I../include -I../libkl/include -g -O -Wall -DDEBUG ../nntpact.cpp ../nntpov.cpp ../nntpart.cpp ../cnntp.cpp nntptest.cpp ovtest.cpp acttest.cpp arttest.cpp posttest.cpp
+nntpact.o: ../nntpact.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h \
+ /usr/include/stdlib.h /usr/include/stdio.h ../libkl/include/dmsg.h \
+ ../include/cnntp.h ../include/clienttcp.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/stddef.h /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/ctype.h /usr/include/runetype.h \
+ /usr/include/g++/cstring /usr/include/string.h \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/_G_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/assert.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ ../include/inettcp.h /usr/include/netinet/in.h \
+ /usr/include/netinet6/in6.h /usr/include/sys/queue.h \
+ ../include/csocket.h /usr/include/sys/errno.h \
+ /usr/include/sys/socket.h /usr/include/machine/param.h \
+ /usr/include/errno.h /usr/include/strings.h /usr/include/fcntl.h \
+ ../include/nntpact.h
+nntpov.o: ../nntpov.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h \
+ /usr/include/stdlib.h /usr/include/stdio.h ../libkl/include/dmsg.h \
+ ../include/cnntp.h ../include/clienttcp.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/stddef.h /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/ctype.h /usr/include/runetype.h \
+ /usr/include/g++/cstring /usr/include/string.h \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/_G_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/assert.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ ../include/inettcp.h /usr/include/netinet/in.h \
+ /usr/include/netinet6/in6.h /usr/include/sys/queue.h \
+ ../include/csocket.h /usr/include/sys/errno.h \
+ /usr/include/sys/socket.h /usr/include/machine/param.h \
+ /usr/include/errno.h /usr/include/strings.h /usr/include/fcntl.h \
+ ../include/nntpov.h
+nntpart.o: ../nntpart.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h \
+ /usr/include/stdlib.h /usr/include/stdio.h ../libkl/include/dmsg.h \
+ ../include/cnntp.h ../include/clienttcp.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/stddef.h /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/ctype.h /usr/include/runetype.h \
+ /usr/include/g++/cstring /usr/include/string.h \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/_G_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/assert.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ ../include/inettcp.h /usr/include/netinet/in.h \
+ /usr/include/netinet6/in6.h /usr/include/sys/queue.h \
+ ../include/csocket.h /usr/include/sys/errno.h \
+ /usr/include/sys/socket.h /usr/include/machine/param.h \
+ /usr/include/errno.h /usr/include/strings.h /usr/include/fcntl.h \
+ ../include/nntpart.h
+cnntp.o: ../cnntp.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h \
+ /usr/include/stdlib.h /usr/include/stdio.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/stddef.h /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/ctype.h /usr/include/runetype.h \
+ /usr/include/g++/cstring /usr/include/string.h \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/_G_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/assert.h \
+ /usr/include/g++/iterator /usr/include/g++/stl_relops.h \
+ /usr/include/g++/stl_iterator.h /usr/include/g++/std/bastring.cc \
+ ../libkl/include/dmsg.h ../include/cnntp.h ../include/clienttcp.h \
+ ../include/inettcp.h /usr/include/netinet/in.h \
+ /usr/include/netinet6/in6.h /usr/include/sys/queue.h \
+ ../include/csocket.h /usr/include/sys/errno.h \
+ /usr/include/sys/socket.h /usr/include/machine/param.h \
+ /usr/include/errno.h /usr/include/strings.h /usr/include/fcntl.h
+nntptest.o: nntptest.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h \
+ /usr/include/errno.h /usr/include/string.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h ../include/cnntp.h ../include/clienttcp.h \
+ /usr/include/g++/string /usr/include/g++/std/bastring.h \
+ /usr/include/g++/cstddef /usr/include/g++/std/straits.h \
+ /usr/include/g++/cctype /usr/include/ctype.h /usr/include/runetype.h \
+ /usr/include/g++/cstring /usr/include/g++/alloc.h \
+ /usr/include/g++/stl_config.h /usr/include/g++/stl_alloc.h \
+ /usr/include/stdlib.h /usr/include/assert.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc ../include/inettcp.h \
+ /usr/include/netinet/in.h /usr/include/netinet6/in6.h \
+ /usr/include/sys/queue.h ../include/csocket.h \
+ /usr/include/sys/errno.h /usr/include/sys/socket.h \
+ /usr/include/machine/param.h /usr/include/strings.h \
+ /usr/include/fcntl.h
+ovtest.o: ovtest.cpp /usr/include/sys/types.h /usr/include/sys/cdefs.h \
+ /usr/include/sys/inttypes.h /usr/include/machine/ansi.h \
+ /usr/include/machine/types.h /usr/include/machine/endian.h \
+ /usr/include/unistd.h /usr/include/sys/unistd.h \
+ /usr/include/sys/_posix.h /usr/include/errno.h /usr/include/string.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h ../include/nntpov.h
+acttest.o: acttest.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h \
+ /usr/include/errno.h /usr/include/string.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h ../include/nntpact.h
+arttest.o: arttest.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h \
+ /usr/include/errno.h /usr/include/string.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h ../include/nntpart.h
+posttest.o: posttest.cpp /usr/include/sys/types.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/inttypes.h \
+ /usr/include/machine/ansi.h /usr/include/machine/types.h \
+ /usr/include/machine/endian.h /usr/include/unistd.h \
+ /usr/include/sys/unistd.h /usr/include/sys/_posix.h \
+ /usr/include/errno.h /usr/include/string.h \
+ /usr/include/g++/iostream.h /usr/include/g++/streambuf.h \
+ /usr/include/g++/libio.h /usr/include/g++/_G_config.h \
+ /usr/include/stddef.h ../libkl/include/dmsg.h ../include/cnntp.h \
+ ../include/clienttcp.h /usr/include/g++/string \
+ /usr/include/g++/std/bastring.h /usr/include/g++/cstddef \
+ /usr/include/g++/std/straits.h /usr/include/g++/cctype \
+ /usr/include/ctype.h /usr/include/runetype.h /usr/include/g++/cstring \
+ /usr/include/g++/alloc.h /usr/include/g++/stl_config.h \
+ /usr/include/g++/stl_alloc.h /usr/include/stdlib.h \
+ /usr/include/assert.h /usr/include/g++/iterator \
+ /usr/include/g++/stl_relops.h /usr/include/g++/stl_iterator.h \
+ /usr/include/g++/std/bastring.cc ../include/inettcp.h \
+ /usr/include/netinet/in.h /usr/include/netinet6/in6.h \
+ /usr/include/sys/queue.h ../include/csocket.h \
+ /usr/include/sys/errno.h /usr/include/sys/socket.h \
+ /usr/include/machine/param.h /usr/include/strings.h \
+ /usr/include/fcntl.h

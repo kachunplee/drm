@@ -1,0 +1,113 @@
+#! /usr/bin/perl
+
+use Fcntl;
+use DB_File;
+
+use strict;
+
+# New word list injected by <STDIN>
+my ($dctfdir, $dctf, $dct_mtime) = @ARGV;
+my $dctdb = $dctf . '.db';
+$dctf .= '.per';
+
+eval
+{
+	($dctfdir ne '' && $dctf ne '') ||
+		die print STDERR 'updatedict: Cannot update ', $dctdb, "\n";
+
+	if (not -d $dctfdir)
+	{
+		system("mkdir $dctfdir");
+	}
+
+	my %DEL;
+	my %DB;
+	my $r = tie %DB, 'DB_File', $dctdb, O_RDWR|O_CREAT;
+	$r || die print STDERR 'updatedict: Cannot update ', $dctdb, ": $!\n";
+	while(my ($word, $value) = each %DB)
+	{
+		$DEL{$word} = $value;
+	}
+
+	my $change = 0;
+	my $unexpecteof = 1;
+	while(<STDIN>)
+	{
+		chomp;
+		if (/^--END--/)
+		{
+			$unexpecteof = 0;
+			last;
+		}
+		my ($word, $time) = split(/\s+/);
+		if (defined $DEL{$word})
+		{
+			delete $DEL{$word};
+		}
+		else
+		{
+			$DB{$word} = $time;
+			$change++;
+		}
+	}
+
+	if ($unexpecteof)
+	{
+		print STDERR 'update dict: unexpected eof', "\n";
+	}
+	else
+	{
+		# Delete leftover
+		foreach my $word (keys %DEL)
+		{
+			$r->del($word);
+			$change++;
+		}
+	}
+
+	exit 0 if $change == 0;
+
+	#
+	# Update dictionary file
+	#
+	open (DICTF, "> $dctf.n") ||
+		die print STDERR "Cannot create ", $dctf, ".n: $!\n";
+	my $error = 0;
+
+	my @keys = sort keys %DB;
+
+	# out title
+	if (not print DICTF 'personal_ws-1.1 en ',
+		scalar(@keys), "\n")
+	{
+		print STDERR "write error: $!\n";
+		++$error;
+	}
+
+	foreach my $key (@keys)
+	{
+		if (not print DICTF $key, "\n")
+		{
+			print STDERR "write error: $!\n";
+			++$error;
+		}
+	}
+	untie $r;
+
+	close DICTF || ++$error;
+
+	utime(time, $dct_mtime, "$dctf.n");
+	utime(time, $dct_mtime, $dctdb);
+
+	if ($error == 0)
+	{
+		rename $dctf, "$dctf.o";
+		rename "$dctf.n", $dctf;
+	}
+};
+
+if ($@)
+{
+	print STDERR 'updatedict error: ', $@, "\n";
+	exit 1;
+}

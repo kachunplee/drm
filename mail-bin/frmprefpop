@@ -1,0 +1,399 @@
+#! /usr/bin/perl
+
+$! = 1;
+print 'Content-Type: text/html', "\n\n";
+
+#
+use strict;
+
+use drmdef;
+require "folder.ph";
+require "drmpref.ph";
+use vars qw($MAILHOME);
+
+my $chgprefprog = $BINDIR . 'frmprefpop';
+
+my $user=$ENV{REMOTE_USER};
+my $server=$ENV{SERVER_NAME};
+if($user eq "")
+{
+	print '<img border="0" src="', ${IMGDIR}, 'spacerwhite.gif" width="25" ',
+		'height="20"><br>', "\n",
+		'<center><font face="Arial" size="2" color="#396BB5">',
+		"<b>No user selected</b></font</center><p>\n";
+	exit;
+}
+
+#
+#
+my $userDir = "$MAILHOME/$user";
+my $fromrc = "$MAILHOME/$user/.fromrc";
+
+#
+my (%RC, %FORM);
+my $mtime = ReadRC($fromrc, \%RC);
+
+my $action;
+my $errmsg;
+my $reloadfolder = 0;
+if ($ENV{REQUEST_METHOD} eq "POST")
+{
+	my $action = GetForm(\%FORM);
+	my %CHG;
+	$errmsg = CheckPopForm(\%CHG, \%FORM, $action);
+	if ($errmsg eq '')
+	{
+		if (IsRCChg(\%RC, \%CHG) > 0)
+		{
+			SaveRC($userDir, $fromrc, \%RC, 1);
+			$reloadfolder = 1;
+		}
+	}
+}
+
+my ($pop1name, $pop1server, $pop1user, $pop1pass);
+my ($pop2name, $pop2server, $pop2user, $pop2pass);
+my ($pop3name, $pop3server, $pop3user, $pop3pass);
+my $popauth;
+
+if (defined($RC{pop1}))
+{
+	($pop1name, $pop1server, $popauth) = split(/\t/, $RC{pop1});
+	($pop1user, $pop1pass) = split(/\//, $popauth);
+}
+
+if (defined($RC{pop2}))
+{
+	($pop2name, $pop2server, $popauth) = split(/\t/, $RC{pop2});
+	($pop2user, $pop2pass) = split(/\//, $popauth);
+}
+
+if (defined($RC{pop3}))
+{
+	($pop3name, $pop3server, $popauth) = split(/\t/, $RC{pop3});
+	($pop3user, $pop3pass) = split(/\//, $popauth);
+}
+
+#
+#
+#
+	print <<EOM;
+<html>
+<head>
+<title>Other Email Info</title>
+</head>
+<body>
+EOM
+
+if ($errmsg ne '')
+{
+	print '<img border="0" src="', ${IMGDIR}, 'spacerwhite.gif" width="25" ',
+		'height="20"><br>', "\n",
+		'<center><font face="Arial" size="2" color="#396BB5"><b>',
+		$errmsg, "</b></font</center><p>\n";
+}
+
+	print <<EOM;
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+    <tr>
+      <td><img border="0" src="${IMGDIR}spacerwhite.gif" width="25" height="7"></td>
+    </tr>
+    <tr>
+      <td><img border="0" src="${IMGDIR}spacerwhite.gif" width="25" height="7"></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<div align="center">
+  <center>
+  <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#396BB5" width="575">
+    <tr>
+      <td bgcolor="#EAEFF8" height="21">
+      <font face="Arial" size="2" color="#396BB5"><b>&nbsp;</b></font><b><font face="Arial" size="2" color="#396BB5"> 
+      Account #1:</font></b></td>
+    </tr>
+    <tr>
+      <td>
+      <div align="center">
+	<form method=POST action=$chgprefprog?$mtime>
+        <center>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="565">
+          <tr>
+            <td colspan="2">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Account Name:</font></b></td>
+            <td><input type=text name=popname value="$pop1name" size=27></td>
+          </tr>
+          <tr>
+            <td><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;POP Server Address:</font></b></td>
+            <td><input type=text name=popserver value="$pop1server" size=41></td>
+          </tr>
+          <tr>
+            <td><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Username:</font></b></td>
+            <td><input type=text name=popuser value="$pop1user" size=14></td>
+          </tr>
+          <tr>
+            <td><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Password:</font></b></td>
+            <td><input type=password name=poppass value="$pop1pass" size=14></td>
+          </tr>
+          <tr>
+            <td colspan="2" height="20">&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <p align="center"><input type=image border=0 src=${IMGDIR}bluesave.gif width="82" height="22" alt="Save Setting" name=action_pop1></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+        </table>
+        </center>
+	</form>
+      </div>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+    <tr>
+      <td height="20">&nbsp;</td>
+    </tr>
+  </table>
+  </center>
+</div>
+<div align="center">
+  <center>
+  <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#396BB5" width="575">
+    <tr>
+      <td bgcolor="#EAEFF8" height="21">
+      <font face="Arial" size="2" color="#396BB5"><b>&nbsp;</b></font><b><font face="Arial" size="2" color="#396BB5"> 
+      Account #2:</font></b></td>
+    </tr>
+    <tr>
+      <td>
+      <div align="center">
+	<form method=POST action=$chgprefprog?$mtime>
+        <center>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="565">
+          <tr>
+            <td colspan="2">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Account Name:</font></b></td>
+            <td><input type=text name=popname value="$pop2name" size=27></td>
+          </tr>
+          <tr>
+            <td><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;POP Server Address:</font></b></td>
+            <td><input type=text name=popserver value="$pop2server" size=41></td>
+          </tr>
+          <tr>
+            <td><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Username:</font></b></td>
+            <td><input type=text name=popuser value="$pop2user" size=14></td>
+          </tr>
+          <tr>
+            <td><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Password:</font></b></td>
+            <td><input type=password name=poppass value="$pop2pass" size=14></td>
+          </tr>
+          <tr>
+            <td colspan="2" height="20">&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <p align="center"><input type=image border=0 src=${IMGDIR}bluesave.gif width="82" height="22" alt="Save Setting" name=action_pop2></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+        </table>
+        </center>
+	</form>
+      </div>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+    <tr>
+      <td height="20">&nbsp;</td>
+    </tr>
+  </table>
+  </center>
+</div>
+<div align="center">
+  <center>
+  <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#396BB5" width="575">
+    <tr>
+      <td bgcolor="#EAEFF8" height="21">
+      <font face="Arial" size="2" color="#396BB5"><b>&nbsp;</b></font><b><font face="Arial" size="2" color="#396BB5"> 
+      Account #3:</font></b></td>
+    </tr>
+    <tr>
+      <td>
+      <div align="center">
+	<form method=POST action=$chgprefprog?$mtime>
+        <center>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="565">
+          <tr>
+            <td colspan="2">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Account Name:</font></b></td>
+            <td><input type=text name=popname value="$pop3name" size=27></td>
+          </tr>
+          <tr>
+            <td><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;POP Server Address:</font></b></td>
+            <td><input type=text name=popserver value="$pop3server" size=41></td>
+          </tr>
+          <tr>
+            <td><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Username:</font></b></td>
+            <td><input type=text name=popuser value="$pop3user" size=14></td>
+          </tr>
+          <tr>
+            <td><b><font face="Arial" size="2" color="#396BB5">
+            &nbsp;Password:</font></b></td>
+            <td><input type=password name=poppass value="$pop3pass" size=14></td>
+          </tr>
+          <tr>
+            <td colspan="2" height="20">&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <p align="center"><input type=image border=0 src=${IMGDIR}bluesave.gif width="82" height="22" alt="Save Setting" name=action_pop3></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <img border="0" src="${IMGDIR}spacer_transparent.gif" width="25" height="7"></td>
+          </tr>
+        </table>
+        </center>
+	</form>
+      </div>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+EOM
+
+	if ($reloadfolder)
+	{
+		print <<EOM;
+<script language=javascript>
+<!--
+top.opener.location.reload();
+//-->
+</script>
+EOM
+	}
+
+	print <<EOM;
+</body>
+</html>
+EOM
+exit 0;
+
+sub CheckPopForm
+{
+	my ($pchg, $pform, $act) = @_;
+
+	my $errmsg;
+
+print STDERR 'checkpopfrom action =', $act, "\n";
+	if ($act !~ /^action_pop(\d+)/)
+	{
+		print STDERR "frmprefpop: illegal action ", $act, "\n";
+		return;
+	}
+	my $popnum = 0 + $1;
+
+	if ($popnum < 1 || $popnum > 3)
+	{
+		print STDERR "frmprefpop: illegal popnum ", $popnum, "\n";
+		return;
+	}
+
+	my $popname = $pform->{popname};
+	my $popserver = $pform->{popserver};
+	my $popuser = $pform->{popuser};
+	my $poppass = $pform->{poppass};
+
+	$popname =~ s/\s/ /g;
+	$popserver =~ s/\s/ /g;
+	$popuser =~ s/\s/ /g;
+	$poppass =~ s/\s/ /g;
+
+	my $data = $popname . "\t" . $popserver . "\t"
+				. $popuser . '/' . $poppass;
+
+	if ($data eq "\t\t/")
+	{
+		$data = '';
+	}
+
+	if ($data ne '')
+	{
+		my $poppath;
+		if ($popname =~ /^.*\/([^\/]+)/)
+		{
+			$poppath = $1;
+			$popname = $2;
+		}
+		$errmsg = addfolder($user, $poppath, $popname, 1);
+	}
+
+	if ($errmsg eq '')
+	{
+		$pchg->{'pop' . $popnum} = $data;
+	}
+
+	return $errmsg;
+}

@@ -1,0 +1,296 @@
+#! /var/local/bin/perl
+
+use strict;
+
+use Fcntl;
+use DB_File;
+
+my $dbfile = "/var/local/mail/alan/filter.db";
+
+$| = 1;
+
+print <<EOM; #---------------------------------
+Content-Type: text/html
+
+<html>
+<head>
+<title>Email Spam Filter Log Details</title>
+</head>
+<body> 
+EOM
+
+my $day = $ARGV[0];
+if ($day eq '')
+{
+	$day = 0;
+}
+shift;
+
+my @fids = ();
+my $reqfilter = $ARGV[0];
+if (defined($reqfilter) && $reqfilter ne '')
+{
+	@fids = split(/,/, $reqfilter);
+}
+
+if (@fids == 0)
+{
+	print ' There is no log data to review at this time.', "\n";
+	exit;
+}
+
+my ($sday, $eday, $i);
+if ($day eq 'a')
+{
+	$sday = 0;
+	$eday = 6;
+} 
+else
+{
+	$sday = $eday = $day;
+}
+
+my %DB;
+unless (tie (%DB, "DB_File", "$dbfile", O_RDONLY))
+{
+	print 'Cannot display your log data details at this time.', "\n";
+	exit;
+}
+
+my (%filters, $filterid);
+my ($filter, $rule, $out);
+my ($who, $date, $subject, $what);
+my ($dbtime, $count, $details, $idx, $key, $value);
+my $fcount = 0;
+my (%info, %rulestg);
+
+print '<h2><font face=Arial color=#26589E>Email Spam Filter Log Details</font></h2>', "\n";
+for ($day = $sday ; $day <= $eday; $day++)
+{
+	my $idxdb = "/var/log/procmailidx_" . $day . ".db";
+	my %IDXDB;
+
+	my $db_obj = tie (%IDXDB, "DB_File", $idxdb, O_RDONLY, 0660, $DB_BTREE);
+	if (not $db_obj)
+	{
+		print 'Cannot open filter index ', $idxdb, ': ', $!, "\n";
+		next;
+	}
+
+	OutStatus("Processing $idxdb...");
+
+	foreach my $id (@fids)
+	{
+		my $rid = $id . '-';
+		my $lkey = $rid;
+		$key = $rid;
+		for(
+			$db_obj->seq($key, $value, R_CURSOR);
+                                ($key ne $lkey)
+                                && ($rid eq getfid($key));
+                        $db_obj->seq($key, $value, R_NEXT))
+                {
+			$lkey = $key;
+			my $filterid = $key;
+			$filterid =~ s/\.[0-9]+$//;
+
+			if (!defined($DB{$filterid}) ||
+				$DB{$filterid} eq '')
+			{
+				next;
+			}
+
+			($dbtime, $rule) = split(/\s+/, $DB{$filterid}, 2);
+			$rule =~ s/&/&amp;/g;
+			$rule =~ s/</&lt;/g;
+			$rule =~ s/>/&gt;/g;
+			if (defined($filters{$rule}))
+			{
+				$filters{$rule}++;
+			}
+			else
+			{
+				$filters{$rule} = 1;
+			}
+			$idx = $filters{$rule} - 1;
+
+			my ($date, $who, $subject) = split("\n", $value);
+
+			$info{$rule}{$idx}{'date'} = $date;
+			$info{$rule}{$idx}{'who'} = $who;
+			$info{$rule}{$idx}{'subj'} = $subject;
+			$fcount++;
+		}
+	}
+
+	undef $db_obj;
+	untie %IDXDB;
+}
+
+my @rules = sort by_values keys %filters;
+
+print <<EOM;
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+EOM
+
+my $n = 1;
+foreach $rule (@rules)
+{
+	$count = $filters{$rule};
+	print <<EOM;
+          <tr>
+            <td width="50" align=right>
+            <font face="Arial" size="2" color="#26589E">$n.</font>&nbsp;</td>
+            <td width="68" align=right>
+            <font face="Arial" size="2" color="#26589E">$count</font>&nbsp;</td>
+            <td width="457">
+            <font face="Arial" size="2" color="#26589E"><a href="#rule$n">$rule</a></font></td>
+          </tr>
+EOM
+	++$n;
+}
+
+print <<EOM;
+</table>
+</center>
+</div>
+<P>
+<div align="center">
+  <center>
+  <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#26589E" width="575">
+    <tr>
+      <td bgcolor="#FEFAE7" height="21">
+        <center>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+          <tr>
+            <td width="117">&nbsp; <b>
+            <font face="Arial" size="2" color="#26589E">Date &amp; Time:</font></b></td>
+            <td width="458"><b><font face="Arial" size="2" color="#26589E">
+            Details:</font></b></td>
+          </tr>
+        </table>
+        </center>
+      </td>
+    </tr>
+    </table>
+EOM
+
+if ($fcount > 0)
+{
+	$out = 0;
+	foreach $rule (@rules)
+	{
+		my $rulenum = $out + 1;
+		#
+		#
+		#
+		print <<EOM;
+  <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#26589E" width="575">
+    <tr><td>
+	<a name="rule$rulenum">
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+          <tr>
+            <td colspan="2" height=14>
+            <img border="0" src="/drm/spacer_1pixel.gif" width="1" height="1"></td>
+          </tr>
+EOM
+
+		$count = $filters{$rule};
+		print <<EOM;
+          <tr>
+            <td width="118" valign="top">&nbsp;
+            <font face="Arial" size="2" color="#26589E"><B>$count</B></font></td>
+            <td width="457" valign="top">
+            <font face="Arial" size="2" color="#26589E"><B>$rule</B></font></td>
+          </tr>
+          <tr>
+            <td width="118" valign="top">&nbsp;</td>
+            <td width="457" valign="top">
+            &nbsp;</td>
+          </tr>
+EOM
+	OutStatus("Outputing rule number $rulenum...");
+		for($idx = 0; $idx < $count; $idx++)
+		{
+			$date = $info{$rule}{$idx}{'date'};
+			$who = $info{$rule}{$idx}{'who'};
+			$subject = $info{$rule}{$idx}{'subj'};
+			print <<EOM;
+          <tr>
+            <td width="118" valign="top">&nbsp;
+            <font face="Arial" size="2" color="#26589E">$date</font></td>
+            <td width="457" valign="top">
+            <font face="Arial" size="2" color="#26589E">$who<br>
+            $subject</font></td>
+          </tr>
+EOM
+		}
+
+		#
+		# End Filter Rule
+		#
+		print <<EOM;
+          <tr>
+            <td colspan="2" height=14>
+            <img border="0" src="/drm/spacer_1pixel.gif" width="1" height="1"></td>
+          </tr>
+        </table>
+	</td></tr></table>
+EOM
+		$out++;
+	}
+}
+else
+{
+	print <<EOM;
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+          <tr>
+            <td colspan="2" height=14>
+            <img border="0" src="/drm/spacer_1pixel.gif" width="1" height="1"></td>
+          </tr>
+          <tr>
+            <td>
+            <p align="center"><b><font face="Arial" size="2" color="#26589E">There is 
+      no log data to review at this time.</font></b></td>
+          </tr>
+          <tr>
+            <td colspan="2" height=14>
+            <img border="0" src="/drm/spacer_1pixel.gif" width="1" height="1"></td>
+          </tr>
+        </table>
+EOM
+}
+
+OutStatus();
+
+print <<EOM;
+  </center>
+</div>
+</body></html>
+EOM
+
+untie %DB;
+
+exit(0);
+
+sub by_values {
+	$filters{$b} <=> $filters{$a}
+}
+
+sub getfid
+{
+	my ($id) = split(/-/, shift);
+	return $id . '-';
+}
+
+sub OutStatus
+{
+	my $status = $_[0] ? "'" . $_[0] . "'" : 'defaultStatus';
+print <<EOM;
+<script>
+	window.status = $status;
+</script>
+EOM
+}

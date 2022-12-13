@@ -1,0 +1,289 @@
+#! /usr/bin/suidperl
+
+use lib qw(.);
+use CGI qw(:standard);
+use strict;
+
+use drmdef;
+use drmsettings;
+
+#
+#
+#
+my $BORDER = 1;
+
+my $CTRLHEIGHT = 60;
+my $FOLDERWIDTH = 150;
+
+my $LCTRLHEIGHT = 56;
+my $LISTHEIGHT = '30%';
+my $HEADERHEIGHT = '50';
+
+my $FOLDER_GO=$ARGV[0];
+my $FOLDER_ARG;
+if ($FOLDER_GO eq '')
+{
+	$FOLDER_GO = 'in';
+}
+else
+{
+	$FOLDER_ARG = '?' . $FOLDER_GO;
+} 
+
+
+#
+#
+#
+$| = 1;
+
+# check for $REMOTE_USER eq ''
+
+GetSettings();
+
+my $user = $ENV{REMOTE_USER};
+my $folder = $MAILDIR . $user . '/Folders';
+
+my $userfolder = 0;
+my $foldercnt = 0;
+my @bfolder = ('in', 'out', 'trash');
+my @folder;
+if (open(FOLDERS, $folder))
+{
+	while(<FOLDERS>)
+	{
+		++$userfolder;
+		chomp;
+		if (not /\/$/)
+		{
+			++$foldercnt;
+		}
+		s/\s//g;
+		push(@folder, $_);
+	}
+	close FOLDERS;
+}
+
+my $bfolders = "'" . join("', '", @bfolder) . "'";
+my $folders = ($userfolder > 0) ? ("'" . join("', '", @folder) . "'") : '';
+
+my $cmd = '/usr/local/bin/dspaccntquota -u ' . $user;
+my $storageuse = 0;
+my $maxsize = 50000;
+my $pid;
+die unless defined($pid = open(KID, "-|"));
+my (@flds) = ();
+if ($pid)
+{
+	while(<KID>)
+	{
+		chomp;
+		@flds = split(/\s+/, $_);
+		if ($flds[1] eq '/v0')
+		{
+			$storageuse = $flds[2];
+			$maxsize = $flds[3];
+			last;
+		}
+	}
+	close(KID);
+}
+else
+{
+	$> = $<;
+	$) = $(;
+	$ENV{PATH} = '/bin:/usr/bin';
+	exec "/usr/local/bin/dspaccntquota", "-u", $user;
+	exit;
+}
+my $storageleft = 0;
+if ($maxsize > $storageuse)
+{
+	$storageleft = sprintf("%0.2f", (($maxsize - $storageuse) / 1000));
+}
+$maxsize = 1 if $maxsize == 0;
+$maxsize *= 1024;
+if ($storageuse > 0)
+{
+	$storageuse = int(($storageuse * 1024 * 100 / $maxsize) + 0.5);
+	$storageuse = int(($storageuse * 132 / 100) + 0.5);
+}
+if ($storageuse > 132)
+{
+	$storageuse = 132;
+}
+my $storageremain = 132 - $storageuse;
+
+print header;
+
+print <<EOM;
+<head>
+<link rel="shortcut ico" href="/favicon.ico">
+<script type=text/javascript language=javascript>
+<!--
+var bLoad = false;
+var listSelectAll = false;
+
+var foldercount = $foldercnt;
+var maxcount = $MAXFOLDER;
+
+var currentFolder = '$FOLDER_GO';
+var BFolders = new Array($bfolders);
+var Folders = new Array($folders);
+
+var fd_read = new Array();
+var fd_unread = new Array();
+
+var storage_left = $storageleft;
+var storage_use = $storageuse;
+var storage_remain = $storageremain;
+EOM
+
+my ($fd, $num_mail, $num_read, $num_unread);
+foreach $fd ((@bfolder, @folder))
+{
+	($num_mail, $num_read) = FolderStat($fd);
+	$num_unread = $num_mail - $num_read;
+	print "fd_read['", $fd, "'] = ", $num_read, "\n";
+	print "fd_unread['", $fd, "'] = ", $num_unread, "\n";
+}
+
+print <<EOM;
+
+function UpdFolder (fd, rd, ur)
+{
+	currentFolder = fd;
+	if (!bLoad)
+	{
+		fd_read[fd] = rd;
+		fd_unread[fd] = ur;
+		return;
+	}
+
+	if ((rd != fd_read[fd]) || (ur != fd_unread[fd]))
+	{
+top.status = 'Folder ' + fd + '<>' + currentFolder + ' '
+	+ rd + '/' + ur + '<>' + fd_read[fd] + '/' + fd_unread[fd];
+		fd_read[fd] = rd;
+		fd_unread[fd] = ur;
+		DRMFolder.location.reload();
+	}
+	else
+	{
+		// change image
+		DRMFolder.SetFolderImg(fd);
+	}
+}
+
+function Loaded ()
+{
+	bLoad = true;
+}
+
+function SetUserFolders (userfolder, newfolders)
+{
+	var i;
+	Folders.length = userfolder;
+	for (var i = 0; i < userfolder; i++)
+	{
+		Folders[i] = newfolders[i];
+	}
+}
+
+//-->
+</script>
+</head>
+
+<frameset rows="$CTRLHEIGHT,*" frameborder=0 border=$BORDER bordersize=$BORDER framespacing=0 onload=Loaded()>
+	<noframes>
+	</noframes>
+
+	<frame name=DRMControl marginheight=0 marginwidth=0 scrolling=no NORESIZE src=frmctrl>
+EOM
+
+if ($folderframe)
+{
+	print <<EOM;
+	<frameset cols="$FOLDERWIDTH,*" frameborder=1 border=$BORDER framespacing=0>
+		<frame name=DRMFolder marginheight=0 marginwidth=0 src=${HTDIR}frmfolder.html border=1>
+EOM
+}
+else
+{
+	print <<EOM;
+	<frameset cols="*" frameborder=1 border=$BORDER framespacing=1>
+EOM
+}
+
+if ($previewframe)
+{
+	print <<EOM;
+<frameset rows="$LCTRLHEIGHT,$LISTHEIGHT,$HEADERHEIGHT,*" framespacing=0 frameborder=0 border=0>
+	<frame name=DRMLstControl marginheight=0 marginwidth=0 scrolling=no NORESIZE src="frmlstctrl$FOLDER_ARG">
+	<frame name=DRMLstDisplay marginheight=0 marginwidth=0 src=javascript:''>
+	<frame name=DRMLstPrevHeader marginheight=0 marginwidth=0 scrolling=no src=frmlstpreview?-h>
+	<frame name=DRMLstPrevBody marginheight=5 marginwidth=5 src=javascript:''>
+</frameset>
+EOM
+}
+else
+{
+	print <<EOM;
+<frameset rows="$LCTRLHEIGHT,*" framespacing=0 frameborder=0 border=0>
+	<frame name=DRMLstControl marginheight=0 marginwidth=0 scrolling=no NORESIZE src=frmlstctrl$FOLDER_ARG>
+	<frame name=DRMLstDisplay marginheight=0 marginwidth=0 src=javascript:''>
+</frameset>
+EOM
+}
+
+print <<EOM;
+		</frameset>
+	</frameset>
+</frameset>
+EOM
+
+exit 0;
+
+sub FolderStat
+{
+	my ($mb) = @_;
+
+	my $num_mail = 0;
+	my $num_read = 0;
+
+	my $inheader = 0;
+	if (open(FOLDER, FolderFile($mb)))
+	{
+		while(<FOLDER>)
+		{
+			if (/^From /)
+			{
+				$inheader = 1;
+				$num_mail++;
+				next;
+			}
+
+			if (/^$/)
+			{
+				$inheader = 0;
+				next;
+			}
+
+			if ($inheader && /^Status: (.*)$/)
+			{
+				$num_read++ if ($1 =~ /R/);
+				next;
+			}
+		}
+	}
+
+	return ($num_mail, $num_read);
+}
+
+sub FolderFile
+{
+	my ($mb) = @_;
+
+	return (($mb eq 'in') ?
+			( '/var/mail/' . $ENV{REMOTE_USER}) :	
+			( $MAILDIR . $ENV{REMOTE_USER} . '/mail/' . $mb));
+}

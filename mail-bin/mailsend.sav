@@ -1,0 +1,384 @@
+#! /usr/bin/perl
+
+#use lib '/usr/local/lib/perl5';
+use MIME::Base64;
+use MIME::QuotedPrint;
+use CGI qw/:standard/;
+$CGI::needs_binmode = 1;
+
+require "flush.pl";
+require "errmsg.ph";
+
+$MAILPOST = "./mailpost";
+$LINELEN = 78;
+
+	$post = new CGI;
+
+	if($ENV{REQUEST_METHOD} ne "POST")
+	{
+		&outErrorMsg("Wrong method ($ENV{REQUEST_METHOD}) for sending email.");
+		exit;
+	}
+
+	if(!($user = $ENV{REMOTE_USER}))
+	{
+		&outErrorMsg("The email account you are using is invalid.");
+		exit;
+	}
+
+	if(!(($name, $passwd, $userID, $userGID) = getpwnam($user)))
+	{
+		&outErrorMsg("The email account you are using is invalid.");
+		exit 1;
+	}
+
+	if(!($mailto = $post->param('mailto')))
+	{
+		&outErrorMsg("The <b>To</b> field is empty.\n Please backup and make the necessary corrections.");
+		exit 1;
+	}
+
+	if(!($from = $post->param('from')))
+	{
+		&outErrorMsg("The <b>From</b> field is empty.\n Please backup and make the necessary corrections");
+		exit 1;
+	}
+
+	$tmpfile = "/tmp/m$$";
+	unless(open(MAILFILE, ">$tmpfile"))
+	{
+		&outErrorMsg("Mail server is busy...\n Please try again later.");
+		exit 1;
+	}
+	chmod 0666, $tmpfile;
+
+	print MAILFILE "X-Mailer: Direct Read Email\n";
+	print MAILFILE "To: ",$mailto,"\n";
+	print MAILFILE "From: ",$from,"\n";
+	print MAILFILE "Subject: ",$post->param('subject'),"\n";
+	if(($cc = $post->param('cc')))
+	{
+		print MAILFILE "Cc: ",$cc,"\n";
+	}
+	if(($bcc = $post->param('bcc')))
+	{
+		print MAILFILE "Bcc: ",$bcc,"\n";
+	}
+
+	$boundary = '';
+	@f = $post->param('filename');
+	if (scalar(@f) >= 1)
+	{
+		print MAILFILE "MIME-Version: 1.0\n";
+		print MAILFILE "Content-Type: multipart/mixed;\n";
+		$boundary = sprintf("---==========_%010u==_",
+			(time%100000)*100000 +$$);
+		print MAILFILE "\tboundary=\"$boundary\"\n";
+	}
+
+	print MAILFILE "\n";
+
+	if ($boundary ne '')
+	{
+		print MAILFILE "This is a multi-part message in MIME format.\n\n";
+		print MAILFILE $boundary, "\n";
+		print MAILFILE "Content-Type: text/plain;\n";
+		print MAILFILE "\tcharset=\"us-ascii\"\n";
+		print MAILFILE "Content-Transfer-Encoding: 7bit;\n";
+	}
+
+	$body = $post->param('MailBody');
+	@lines = split(/\r\n/, $body);
+	foreach $line (@lines)
+	{
+		$outline = "";
+		$outlen = 0;
+		if($line =~ /^From /)
+		{
+			print MAILFILE ">";
+		}
+
+		if(length($line) <= $LINELEN)
+		{
+			print MAILFILE $line,"\n";
+			next;
+		}
+
+		$quote = "";
+		if($line =~ /^>+/)
+		{
+			$quote = $&;
+			$line = $';
+		}
+		@words = split('\s', $line);
+		foreach $word (@words)
+		{
+			if(((length($word) + $outlen + 1) <= $LINELEN) ||
+				($outlen == 0))
+			{
+				if($outlen > 0)
+				{
+					$outline .= ' ';
+					$outlen++;
+				}
+				$outline .= $word;
+				$outlen += length($word);
+				next;
+			}
+			else
+			{
+				print MAILFILE $quote,$outline,"\n";
+				$outline = $word;
+				$outlen = length($word);
+			}
+		}
+		print MAILFILE $quote,$outline,"\n";
+	}
+
+	print MAILFILE "\n";
+
+	foreach $filename (@f)
+	{
+		$name = $filename;
+		$name =~ s/.*\\//;
+		$name =~ s/.*\///;
+		$lname = $name;
+		$lname =~ tr/A-Z/a-z/;
+		($ctype, $text) = lookup_ctype($filename);
+		print MAILFILE $boundary, "\n";
+		print MAILFILE "Content-Type: $ctype;\n";
+		print MAILFILE "\tname=\"$name\"\n";
+		print MAILFILE "Content-Transfer-Encodeing: base64;\n";
+		print MAILFILE "Content-Disposition: attachment;\n";
+		print MAILFILE "\tfilename=\"$name\"\n\n";
+
+		$chunk;
+		$dlinsize = 57;
+		if ($text == 0)
+		{
+			while (read($filename, $chunk, $dlinsize) > 0)
+			{
+				print encode_base64($chunk);
+			}
+		}
+		else
+		{
+			while (read($filename, $chunk, $dlinsize) > 0)
+			{
+				print encode_qp($_, ""), "=\n";
+			}
+		}
+		print MAILFILE "\n";
+	}
+
+	if ($boundary ne '')
+	{
+		print MAILFILE $boundary, "\n\n";
+	}
+
+	close MAILFILE;
+
+	if(!($foldername = $post->param('foldername')))
+	{
+		$foldername = "in";
+	}
+	if(!($mailIdx = $post->param('mailidx')))
+	{
+		$mailIdx = "0";
+	}
+	$mailID = $post->param('mailid');
+	$mailStat = $post->param('mailstat');
+	$cmd = "$MAILPOST '$user' '$tmpfile' '$foldername' '$mailIdx' '$mailID' '$mailStat'";
+	system $cmd;
+	unlink $tmpfile;
+	if(-f $tmpfile)
+	{
+		system "rm $tmpfile";
+	}
+
+	exit 0;
+
+sub outErrorMsg
+{
+	print $post->header;
+	print "<body bgcolor=#ffffff>\n";
+	print "<font size=2>$_[0]</font>\n";
+	print $post->end_html;
+}
+
+my %content_type = {
+  ez <= 'application/andrew-inset' ,
+  atom <= 'application/atom+xml' ,
+  hqx <= 'application/mac-binhex40' ,
+  cpt <= 'application/mac-compactpro' ,
+  mathml <= 'application/mathml+xml' ,
+  doc <= 'application/msword' ,
+  bin <= 'application/octet-stream' ,
+  dms <= 'application/octet-stream' ,
+  lha <= 'application/octet-stream' ,
+  lzh <= 'application/octet-stream' ,
+  exe <= 'application/octet-stream' ,
+  class <= 'application/octet-stream' ,
+  so <= 'application/octet-stream' ,
+  dll <= 'application/octet-stream' ,
+  dmg <= 'application/octet-stream' ,
+  oda <= 'application/oda' ,
+  ogg <= 'application/ogg' ,
+  pdf <= 'application/pdf' ,
+  ai <= 'application/postscript' ,
+  eps <= 'application/postscript' ,
+  ps <= 'application/postscript' ,
+  rdf <= 'application/rdf+xml' ,
+  smi <= 'application/smil' ,
+  smil <= 'application/smil' ,
+  gram <= 'application/srgs' ,
+  grxml <= 'application/srgs+xml' ,
+  mif <= 'application/vnd.mif' ,
+  xul <= 'application/vnd.mozilla.xul+xml' ,
+  xls <= 'application/vnd.ms-excel' ,
+  ppt <= 'application/vnd.ms-powerpoint' ,
+  rm <= 'application/vnd.rn-realmedia' ,
+  wbxml <= 'application/vnd.wap.wbxml' ,
+  wmlc <= 'application/vnd.wap.wmlc' ,
+  wmlsc <= 'application/vnd.wap.wmlscriptc' ,
+  vxml <= 'application/voicexml+xml' ,
+  bcpio <= 'application/x-bcpio' ,
+  vcd <= 'application/x-cdlink' ,
+  pgn <= 'application/x-chess-pgn' ,
+  cpio <= 'application/x-cpio' ,
+  csh <= 'application/x-csh' ,
+  dcr <= 'application/x-director' ,
+  dir <= 'application/x-director' ,
+  dxr <= 'application/x-director' ,
+  dvi <= 'application/x-dvi' ,
+  spl <= 'application/x-futuresplash' ,
+  gtar <= 'application/x-gtar' ,
+  hdf <= 'application/x-hdf' ,
+  js <= 'application/x-javascript' ,
+  skp <= 'application/x-koan' ,
+  skd <= 'application/x-koan' ,
+  skt <= 'application/x-koan' ,
+  skm <= 'application/x-koan' ,
+  latex <= 'application/x-latex' ,
+  nc <= 'application/x-netcdf' ,
+  cdf <= 'application/x-netcdf' ,
+  sh <= 'application/x-sh' ,
+  shar <= 'application/x-shar' ,
+  swf <= 'application/x-shockwave-flash' ,
+  sit <= 'application/x-stuffit' ,
+  sv4cpio <= 'application/x-sv4cpio' ,
+  sv4crc <= 'application/x-sv4crc' ,
+  tar <= 'application/x-tar' ,
+  tcl <= 'application/x-tcl' ,
+  tex <= 'application/x-tex' ,
+  texinfo <= 'application/x-texinfo' ,
+  texi <= 'application/x-texinfo' ,
+  t <= 'application/x-troff' ,
+  tr <= 'application/x-troff' ,
+  roff <= 'application/x-troff' ,
+  man <= 'application/x-troff-man' ,
+  me <= 'application/x-troff-me' ,
+  ms <= 'application/x-troff-ms' ,
+  ustar <= 'application/x-ustar' ,
+  src <= 'application/x-wais-source' ,
+  xhtml <= 'application/xhtml+xml' ,
+  xht <= 'application/xhtml+xml' ,
+  xslt <= 'application/xslt+xml' ,
+  xml <= 'application/xml' ,
+  xsl <= 'application/xml' ,
+  dtd <= 'application/xml-dtd' ,
+  zip <= 'application/zip' ,
+  au <= 'audio/basic' ,
+  snd <= 'audio/basic' ,
+  mid <= 'audio/midi' ,
+  midi <= 'audio/midi' ,
+  kar <= 'audio/midi' ,
+  mpga <= 'audio/mpeg' ,
+  mp2 <= 'audio/mpeg' ,
+  mp3 <= 'audio/mpeg' ,
+  aif <= 'audio/x-aiff' ,
+  aiff <= 'audio/x-aiff' ,
+  aifc <= 'audio/x-aiff' ,
+  m3u <= 'audio/x-mpegurl' ,
+  ram <= 'audio/x-pn-realaudio' ,
+  ra <= 'audio/x-pn-realaudio' ,
+  wav <= 'audio/x-wav' ,
+  pdb <= 'chemical/x-pdb' ,
+  xyz <= 'chemical/x-xyz' ,
+  bmp <= 'image/bmp' ,
+  cgm <= 'image/cgm' ,
+  gif <= 'image/gif' ,
+  ief <= 'image/ief' ,
+  jpeg <= 'image/jpeg' ,
+  jpg <= 'image/jpeg' ,
+  jpe <= 'image/jpeg' ,
+  png <= 'image/png' ,
+  svg <= 'image/svg+xml' ,
+  tiff <= 'image/tiff' ,
+  tif <= 'image/tiff' ,
+  djvu <= 'image/vnd.djvu' ,
+  djv <= 'image/vnd.djvu' ,
+  wbmp <= 'image/vnd.wap.wbmp' ,
+  ras <= 'image/x-cmu-raster' ,
+  ico <= 'image/x-icon' ,
+  pnm <= 'image/x-portable-anymap' ,
+  pbm <= 'image/x-portable-bitmap' ,
+  pgm <= 'image/x-portable-graymap' ,
+  ppm <= 'image/x-portable-pixmap' ,
+  rgb <= 'image/x-rgb' ,
+  xbm <= 'image/x-xbitmap' ,
+  xpm <= 'image/x-xpixmap' ,
+  xwd <= 'image/x-xwindowdump' ,
+  igs <= 'model/iges' ,
+  iges <= 'model/iges' ,
+  msh <= 'model/mesh' ,
+  mesh <= 'model/mesh' ,
+  silo <= 'model/mesh' ,
+  wrl <= 'model/vrml' ,
+  vrml <= 'model/vrml' ,
+  ics <= 'text/calendar' ,
+  ifb <= 'text/calendar' ,
+  css <= 'text/css' ,
+  html <= 'text/html' ,
+  htm <= 'text/html' ,
+  asc <= 'text/plain' ,
+  txt <= 'text/plain' ,
+  rtx <= 'text/richtext' ,
+  rtf <= 'text/rtf' ,
+  sgml <= 'text/sgml' ,
+  sgm <= 'text/sgml' ,
+  tsv <= 'text/tab-separated-values' ,
+  wml <= 'text/vnd.wap.wml' ,
+  wmls <= 'text/vnd.wap.wmlscript' ,
+  etx <= 'text/x-setext' ,
+  mpeg <= 'video/mpeg' ,
+  mpg <= 'video/mpeg' ,
+  mpe <= 'video/mpeg' ,
+  qt <= 'video/quicktime' ,
+  mov <= 'video/quicktime' ,
+  mxu <= 'video/vnd.mpegurl' ,
+  m4u <= 'video/vnd.mpegurl' ,
+  avi <= 'video/x-msvideo' ,
+  movie <= 'video/x-sgi-movie' ,
+  ice <= 'x-conference/x-cooltalk'
+};
+
+#
+# return ($content_type, $text);
+#
+sub lookup_ctype
+{
+	my ($filename) = @_;
+
+	return ('application/octet-stream', 0)
+		if ($filename !~ /\.([^.])+$/);
+
+	my $ctype = $content_type{$1};
+
+print STDERR "ctype=$ctype\n";
+
+	return ('application/octet-stream', 0)
+		if not defined($ctype);
+
+	return ($ctype, ($ctype =~ /^text\//));
+}

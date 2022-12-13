@@ -1,0 +1,61 @@
+#! /usr/bin/perl
+
+use lib qw(. ../perl5 /var/local/libdata/perl5);
+
+use STG_TPL;
+use NGFILE;
+
+use strict;
+
+require "folder.ph";
+require "errmsg.ph";
+
+my $EMPTYBOX_CONFIRM = 'emptyinboxconfirm.html';
+my $EMPTYBOX_ERROR = 'emptyinboxerror.html';
+
+my $user = $ENV{REMOTE_USER};
+my $confirm = $ARGV[0];
+
+eval
+{
+	if ($confirm ne 'yes')
+	{
+		my $time = time;
+		print 'Content-type: text/html', "\n\n",
+			eval ${StgTemplate(GetFile($EMPTYBOX_CONFIRM))};
+	}
+	else
+	{
+		#empty in box here
+		my $data = 'mboxname=trash&actiontype=emptyinbox';
+		my $dlen = length($data);
+		my @reply = `set -x; echo '$data' | env REQUEST_METHOD=POST CONTENT_LENGTH=$dlen ./mailxfer -X`;
+		shift @reply; shift @reply;
+		shift @reply if $reply[0] =~ /body link/;
+		print STDERR $user, ': emptytrash: ', $reply[0];
+		system("rm -f /usr/mail/$user");
+		print <<EOM;
+Content-type: text/html
+
+<html>
+<head>
+<script language=javascript>
+<!--
+opener.refreshFolder('in');
+window.close();
+//-->
+</script>
+</head>
+</html>
+EOM
+	}
+};
+
+if ($@)
+{
+	my $errmsg = $@;
+	PopupError($errmsg);
+	exit 1;
+}
+
+exit(0);

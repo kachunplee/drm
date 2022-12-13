@@ -1,0 +1,10 @@
+#! /usr/bin/perl
+
+use strict;
+use MIME::QuotedPrint;
+
+while (<STDIN>)
+{
+	# = is the speical character
+	print encode_qp($_, ""), "=\n";
+}

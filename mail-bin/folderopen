@@ -1,0 +1,83 @@
+#! /usr/bin/perl
+
+use lib qw(.);
+use strict;
+
+use drmdef;
+
+#
+my $cOpen = ($0 =~ /folderopen$/) ? '+' : '-';
+my $foldername = $ARGV[0];
+
+my $user = $ENV{REMOTE_USER};
+my $folderfile = $MAILDIR . $user . '/Folders';
+
+my $errmsg = 'unexpected error';
+my ($changed, $nc);
+eval
+{
+	my @folder;
+	if (open(FOLDERS, $folderfile))
+	{
+		while(<FOLDERS>)
+		{
+			chomp;
+			s/\s//g;
+			my $f = $_;
+			my $c = '';		# default to close
+			if (/^(.*)([-+])$/)
+			{
+				$f = $1;
+				$c = $2;
+			}
+
+			if ($f eq $foldername)
+			{
+				if ($c ne $cOpen)
+				{
+					$c = $cOpen;
+					$nc = $cOpen;
+					$changed = $f;
+				}
+			}
+
+			push(@folder, $f . $c);
+		}
+
+		close FOLDERS;
+	}
+
+	if ($changed)
+	{
+		open(NEW, ">$folderfile.n") ||
+			die "Cannot create $folderfile.n: $!\n";
+		foreach my $f (@folder)
+		{
+			print NEW $f, "\n";
+		}
+
+		close NEW;
+		link $folderfile, "$folderfile.o";
+		rename "$folderfile.n", $folderfile;
+	}
+
+	$errmsg = '';		# no error
+};
+
+print "Content-type: text/plain\n\n";
+
+if ($@)
+{
+	print "ERROR: ", $@, "\n";
+	exit 1;
+
+}
+
+if ($changed eq '')
+{
+	print 'OK', "\n";
+	exit 0;
+}
+
+print 'OK: ', $changed, ' ', $nc, "\n";
+exit 0;

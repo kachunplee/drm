@@ -1,0 +1,13 @@
+#! /bin/bash
+
+if [ $1 = '' ]
+then
+	echo 'usage: cmd user'
+	exit 1
+fi
+
+set -x
+export REMOTE_USER=$1
+export HTTPS=on
+export CONTENT_LENGTH=100
+su http -c "echo 'mboxname=trash&actiontype=emptytrash' | env REQUEST_METHOD=POST ./mailxfer -X"

@@ -1,0 +1,148 @@
+#! /usr/bin/perl
+
+use lib qw(. ../perl5 /var/local/libdata/perl5);
+
+use CGI;
+use STG_TPL;
+use NGFILE;
+
+use strict;
+
+require "folder.ph";
+require "errmsg.ph";
+
+my $RENAME_FOLDER = 'renamefolder.html';
+my $RENAME_FOLDER_ERROR = 'renamefoldererror.html';
+
+my $cgi = new CGI;
+
+my $user = $ENV{REMOTE_USER};
+my $errmsg;
+
+eval
+{
+	if (defined($ARGV[0]) && $ARGV[0] ne '')
+	{
+		my $fromfolder = $ARGV[0];
+		$fromfolder =~ tr/A-Z/a-z/;
+		if (f_is_buildin($fromfolder))
+		{
+			$errmsg = "Cannot rename folder $fromfolder";
+			print 'Content-type: text/html', "\n\n",
+			eval ${StgTemplate(GetFile($RENAME_FOLDER_ERROR))};
+			return;
+		}
+		print 'Content-type: text/html', "\n\n",
+			eval ${StgTemplate(GetFile($RENAME_FOLDER))};
+		return;
+	}
+
+	my $fromfolder = $cgi->param('fromfolder');
+	$fromfolder =~ tr/A-Z/a-z/;
+	if (f_is_buildin($fromfolder))
+	{
+		$errmsg = "Cannot rename folder $fromfolder";
+		print 'Content-type: text/html', "\n\n",
+			eval ${StgTemplate(GetFile($RENAME_FOLDER_ERROR))};
+		return;
+	}
+
+	my $tofolder = $cgi->param('tofolder');
+	$tofolder =~ tr/A-Z/a-z/;
+	if (f_is_buildin($tofolder))
+	{
+		die "Cannot rename $fromfolder folder to $tofolder. Please click &quot;Back&quot; and try again.\n";
+	}
+
+	my $dir = "/var/local/mail/$user";
+	mkdir($dir,0775) if(! -d $dir);
+
+	#if (length($tofolder) < 3 || length($tofolder) > 10)
+	#{
+	#	die "Please select a folder name that is 3 to 10 alphanumeric characters long. Please click &quot;Back&quot; and try again.\n";
+	#}
+
+	if ($tofolder =~ /[^a-z0-9\/]/)
+	{
+		die "Folder names must use alphanumeric characters.\n";
+	}
+
+	if (d_is_exist("/var/local/mail/$user/Folders", $tofolder) < 0)
+	{
+		die "Folder $tofolder already exists.\n";
+	}
+
+	if (f_is_exist("$dir/Folders", $fromfolder) >= 0)
+	{
+		$errmsg = "Folder $fromfolder you are trying to"
+		. " rename does not exist";
+
+		print 'Content-type: text/html', "\n\n",
+			eval ${StgTemplate(GetFile($RENAME_FOLDER_ERROR))};
+		return;
+	}
+
+	my $folderdir = "$dir/mail";
+	system("mkdir -p 0775 $folderdir") if(! -d $folderdir);
+	my $foldersname = "$dir/Folders";
+	if ($tofolder =~ /\//)
+	{
+		# to folder contains directory, need to add all the directories
+		my @f = split(/\//, $tofolder);
+		my $fname = pop(@f);
+		my $name;
+		foreach my $n (@f)
+		{
+			$name .= $n . "/";
+print STDERR "f_add_line name=$name\n";
+			f_add_line($foldersname, $name);
+		}
+print STDERR "mkdir name=$name\n";
+		system("mkdir -p 0775 $folderdir/$name") if(! -d "$folderdir/$name");
+		$name .= $fname;
+print STDERR "f_add_line name=$name\n";
+		f_add_line($foldersname, $name);
+	}
+	else
+	{
+		f_add_line($foldersname, $tofolder);
+	}
+	if (-f "$folderdir/$fromfolder")
+	{
+		rename ("$folderdir/$fromfolder", "$folderdir/$tofolder");
+	}
+	f_del_line($foldersname, $fromfolder);
+
+	my ($userfolder, @folder) = readfolders($user);
+	my $folders = ($userfolder > 0) ?
+			("'" . join("', '", @folder) . "'") : '';
+
+#
+# Folder is not longer in a frame...
+# Should convert Folders into dynamic panel, so no reload is required.
+#
+	print <<EOM;
+Content-type: text/html
+
+<html>
+<head>
+<script language=javascript>
+<!--
+opener.location.reload();
+window.close();
+//-->
+</script>
+</head>
+</html>
+EOM
+};
+
+
+if ($@)
+{
+	my $errmsg = $@;
+	PopupError($errmsg);
+	exit 1;
+}
+
+exit(0);

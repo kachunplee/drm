@@ -1,0 +1,187 @@
+#! /usr/bin/suidperl
+
+use lib qw(.);
+use strict;
+
+use drmdef;
+use drmsettings;
+
+#
+my $FOLDER_GO=$ARGV[0];
+my $FOLDER_ARG;
+if ($FOLDER_GO eq '')
+{
+	$FOLDER_GO = 'in';
+}
+else
+{
+	$FOLDER_ARG = '?' . $FOLDER_GO;
+} 
+
+
+#
+#
+#
+$| = 1;
+
+GetSettings();
+
+my $user = $ENV{REMOTE_USER};
+my $folder = $MAILDIR . $user . '/Folders';
+
+my $userfolder = 0;
+my $foldercnt = 0;
+my @bfolder = ('in', 'out', 'trash');
+my @folder;
+my $fdiropens;
+if (open(FOLDERS, $folder))
+{
+	while(<FOLDERS>)
+	{
+		chomp;
+		s/\s//g;
+		my $f = $_;
+		my $c = '';
+		if ($f =~ /^(.*\/)([-+])$/)
+		{
+			$f = $1;
+			$c = $2;
+		}
+
+		if ($f !~ /\/$/)
+		{
+			++$foldercnt;
+		}
+		++$userfolder;
+		push(@folder, $f);
+		$fdiropens .= ', ' if $fdiropens ne '';
+		$fdiropens .= '"' . $c . '"';
+	}
+	close FOLDERS;
+}
+
+my $bfolders = "'" . join("', '", @bfolder) . "'";
+my $folders = ($userfolder > 0) ? ("'" . join("', '", @folder) . "'") : '';
+print STDERR $folders, "\n";
+
+my $storageuse = 0;
+my $maxsize = 50000;
+my $pid;
+die unless defined($pid = open(KID, "-|"));
+my (@flds) = ();
+if ($pid)
+{
+	while(<KID>)
+	{
+		chomp;
+		@flds = split(/\s+/, $_);
+		if ($flds[1] eq '/v0')
+		{
+			$storageuse = $flds[2];
+			$maxsize = $flds[3];
+			last;
+		}
+	}
+	close(KID);
+}
+else
+{
+	$> = $<;
+	$) = $(;
+	$ENV{PATH} = '/bin:/usr/bin';
+	exec "/usr/local/bin/dspaccntquota", "-u", $user;
+	exit;
+}
+my $storageleft = 0;
+if ($maxsize > $storageuse)
+{
+	$storageleft = sprintf("%0.2f", (($maxsize - $storageuse) / 1000));
+}
+$maxsize = 1 if $maxsize == 0;
+$maxsize *= 1024;
+if ($storageuse > 0)
+{
+	$storageuse = int(($storageuse * 1024 * 100 / $maxsize) + 0.5);
+	$storageuse = int(($storageuse * 132 / 100) + 0.5);
+}
+if ($storageuse > 132)
+{
+	$storageuse = 132;
+}
+my $storageremain = 132 - $storageuse;
+
+print <<EOM;
+var listSelectAll = false;
+
+var foldercount = $foldercnt;
+var maxcount = $MAXFOLDER;
+
+var currentFolder = '$FOLDER_GO';
+var BFolders = new Array($bfolders);
+var Folders = new Array($folders);
+var FDiropens = new Array($fdiropens);
+
+var fd_read = new Array();
+var fd_unread = new Array();
+
+var storage_left = $storageleft;
+var storage_use = $storageuse;
+var storage_remain = $storageremain;
+EOM
+
+my ($fd, $num_mail, $num_read, $num_unread);
+foreach $fd ((@bfolder, @folder))
+{
+	($num_mail, $num_read) = FolderStat($fd);
+	$num_unread = $num_mail - $num_read;
+	print "fd_read['", $fd, "'] = ", $num_read, "\n";
+	print "fd_unread['", $fd, "'] = ", $num_unread, "\n";
+}
+
+
+exit 0;
+
+sub FolderStat
+{
+	my ($mb) = @_;
+
+	my $num_mail = 0;
+	my $num_read = 0;
+
+	my $inheader = 0;
+	if (open(FOLDER, FolderFile($mb)))
+	{
+		while(<FOLDER>)
+		{
+			if (/^From /)
+			{
+				$inheader = 1;
+				$num_mail++;
+				next;
+			}
+
+			if (/^$/)
+			{
+				$inheader = 0;
+				next;
+			}
+
+			if ($inheader && /^Status: (.*)$/)
+			{
+				$num_read++ if ($1 =~ /R/);
+				next;
+			}
+		}
+	}
+
+	return ($num_mail, $num_read);
+}
+
+sub FolderFile
+{
+	my ($mb) = @_;
+
+	return (($mb eq 'in') ?
+			( '/var/mail/' . $ENV{REMOTE_USER}) :	
+			( $MAILDIR . $ENV{REMOTE_USER} . '/mail/' . $mb));
+}

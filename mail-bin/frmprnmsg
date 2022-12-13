@@ -1,0 +1,38 @@
+#! /usr/bin/perl
+
+use CGI qw(:standard);
+use strict;
+
+use drmdef;
+use drmsettings;
+
+GetSettings();
+
+$| = 1;
+print header;
+
+use vars qw($DEBUG);
+
+my $BORDER = $DEBUG ? 1 : 0;
+
+my $foldername = $ARGV[0];
+if ($foldername ne '')
+{
+	$foldername .= "+";
+}
+shift @ARGV;
+
+my $args = join('+', @ARGV);
+$args =~ s/\\//g;
+$args =~ s/&/&amp;/g;
+$args =~ s/</&lt;/g;
+$args =~ s/>/&gt;/g;
+
+print <<EOM;
+<frameset rows="50,*" framespacing=0 frameborder=$BORDER border=0>
+	<frame name=DRMPrnMsgHdr marginheight=0 marginwidth=0 scrolling=no NORESIZE src=frmprnmsghdr>
+	<frame name=DRMPrnMsgBody marginheight=5 marginwidth=5 src=message?$foldername$args>
+</frameset>
+EOM
+
+exit 0;

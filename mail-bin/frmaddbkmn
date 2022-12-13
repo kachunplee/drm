@@ -1,0 +1,269 @@
+#! /usr/bin/perl
+
+$! = 1;
+print 'Content-Type: text/html', "\n\n";
+
+#
+use strict;
+
+use drmdef;
+require "drmpref.ph";
+use vars qw($MAILHOME);
+
+my $MAX_NICK = 100;
+my $MAX_ADDR = 50;
+
+my $user=$ENV{REMOTE_USER};
+my $server=$ENV{SERVER_NAME};
+if($user eq "")
+{
+	print "<h3>No user selected</h3>\n";
+	exit;
+}
+
+#
+#
+my $userDir = "$MAILHOME/$user";
+my $aliasrc = "$MAILHOME/$user/.aliasrc";
+
+#
+my %RC;
+my $mtime = ReadRC($aliasrc, \%RC);
+if ($ARGV[0] =~ '-d')
+{
+	my $key = $ARGV[1] . ':';
+	if (defined($RC{$key}))
+	{
+		delete($RC{$key});
+		SaveRC($userDir, $aliasrc, \%RC);
+	}
+}
+
+my $errmsg;
+if ($ENV{REQUEST_METHOD} eq "POST")
+{
+	my %FORM;
+	my $action = GetForm(\%FORM);
+	if ($action eq 'action_nicksave')
+	{
+		my $nickname = $FORM{nickname};
+		my $addresses = $FORM{addresses};
+		if ($nickname eq '')
+		{
+			$errmsg = "Contact name cannot be blank";
+		}
+		elsif ($nickname =~ /[:_]/)
+		{
+			$errmsg = "Contact name cannot contain any '_' or ':' character";
+		}
+		elsif ($addresses eq '')
+		{
+				$errmsg = "The address field cannot be blank";
+		}
+		else
+		{
+			my $key = $nickname . ':';
+			my $n = scalar(keys %RC);
+
+			my $oldname = $FORM{oldname};
+			if ($oldname ne '')
+			{
+				++$n if ($oldname ne $nickname) &&
+					not defined($RC{$oldname . ':'});
+			}
+			else
+			{
+				++$n if not defined($RC{$nickname});
+			}
+
+			if ($n > $MAX_NICK)
+			{
+				$errmsg = "You have reach the maximum number of contact";
+			}
+			else
+			{
+				$addresses =~ s/\r\n/,/g;
+				$addresses =~ s/\n/,/g;
+				#$addresses =~ s/\s//g;
+				my @addr = split(/,/, $addresses);
+				if (scalar(@addr) > $MAX_ADDR)
+				{
+					$errmsg = "Cannot accept more than $MAX_ADDR email addresses for each nickname";
+				}
+				else
+				{
+					delete($RC{$oldname . ':'}) if $oldname ne '';
+					
+					$RC{$key} = $addresses;
+					SaveRC($userDir, $aliasrc, \%RC);
+				}
+			}
+		}
+	}
+}
+
+	print <<EOM;
+<html>
+<head>
+<title>Address Book</title>
+<link rel="stylesheet" type="text/css" href="${CSSDIR}drm.css" title="Style"
+>
+<script language=javascript src=${JSDIR}floatmenu.js></script>
+<script language=javascript src=${JSDIR}addrbook.js></script>
+<script language=javascript src=${JSDIR}drmwin.js></script>
+</head>
+<body onload="InitMenu()">
+</head>
+<body>
+<script>
+	parent.DRMAddBkHeader.location.href = 'frmaddbkhd';
+</script>
+EOM
+
+if ($errmsg ne '')
+{
+	print <<EOM;
+  <center>
+  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+    <tr>
+      <td><img border="0" src="${IMGDIR}spacerwhite.gif" width="25" height="7"></td>
+        <font face="Arial" size="2" color="#FF0000">$errmsg</font>
+    </tr>
+    <tr>
+      <td><img border="0" src="${IMGDIR}spacerwhite.gif" width="25" height="7"></td>
+    </tr>
+  </table>
+  </center>
+EOM
+}
+
+print <<EOM;
+  <center>
+  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+    <tr>
+      <td><img border="0" src="${IMGDIR}spacerwhite.gif" width="25" height="7"></td>
+    </tr>
+    <tr>
+      <td><img border="0" src="${IMGDIR}spacerwhite.gif" width="25" height="7"></td>
+    </tr>
+  </table>
+  </center>
+  <center>
+  <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#396BB5" width="575">
+    <tr>
+      <td bgcolor="#EAEFF8" height="21">
+        <center>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+          <tr>
+            <td width="160"><b>
+            <font face="Arial" size="2" color="#396BB5">&nbsp; Contact:</font></b></td>
+            <td width="335"><b><font face="Arial" size="2" color="#396BB5">
+            Addresses:</font></b></td>
+            <td width="80">
+            </td>
+          </tr>
+        </table>
+        </center>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <center>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+          <tr>
+            <td colspan="3" width="575"><img border="0" src="${IMGDIR}spacerwhite.gif" width="25" height="7"></td>
+          </tr>
+          <tr>
+            <td colspan="3" width="575"><img border="0" src="${IMGDIR}spacerwhite.gif" width="25" height="7"></td>
+          </tr>
+EOM
+
+my $n = 0;
+foreach my $nick (sort keys %RC)
+{
+	my $addrs = $RC{$nick};
+	PrintAlias($nick, \$addrs, ++$n);
+}
+
+
+if ($n == 0)
+{
+	print <<EOM;
+<center>
+  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575" height="300">
+    <tr>
+      <td>
+      <p align="center"><b><font face="Arial" size="2" color="#396BB5">There are 
+      no contacts listed in your Address Book at this time. <br>
+        To add a contact, please click the &quot;Add New Contact&quot; toolbar button.</font></b></td>
+    </tr>
+  </table>
+  </center>
+EOM
+}
+
+print <<EOM;
+        </table>
+        </center>
+      </td>
+    </tr>
+  </table>
+  </center>
+
+<script language=javascript>
+<!--
+	var menuName = 'AddrBook';
+	BeginMenu(menuName, 100, '#6A97D9');
+		MenuItem(menuName, 'Edit Contact...', 'Edit Contact',
+			'javascript:EditContact($mtime)');
+		MenuItem(menuName, 'Delete Contact...', 'Delete Contact',
+			'javascript:DeleteContact($mtime)');
+	EndMenu();
+//-->
+</script>
+</body>
+</html>
+EOM
+
+exit 0;
+
+sub PrintAlias
+{
+	my ($user, $addresses, $nidx) = @_;
+
+	my $id;
+	if ($user eq '')
+	{
+		$user = 'none';
+		$addresses = \"none";
+	}
+	else
+	{
+		$user =~ s/:$//;
+		$$addresses =~ s/\&/&amp;/g;
+		$$addresses =~ s/\</&lt;/g;
+		$$addresses =~ s/\>/&gt;/g;
+		$$addresses =~ s/\s/&nbsp;/g;
+		$$addresses =~ s/,/<br>&nbsp;/g;
+	
+		$id = $user;
+		$id =~ s/%/%25/g;
+		$id =~ s/\s+/%20/g;
+		$id =~ s/\+/%2b/g;
+	}
+
+	print <<EOM;
+          <tr>
+            <td width="160" valign="top">
+            <font face="Arial" size="2" color="#396BB5">&nbsp; $user</font></td>
+            <td width="336" valign="top">
+            <font face="Arial" size="2" color="#396BB5">&nbsp;$$addresses</font></td>
+            <td width="79" valign="top">
+            <p align="right"><img id=iMenuAddrBook_$id name=iMenuAddrBook_$id border=0 src="${IMGDIR}blueoptions.gif" width="65" height="18"></td></tr>
+          <tr>
+            <td width="160" valign="top" height="20">&nbsp;</td>
+            <td width="336" valign="top" height="20">&nbsp;</td>
+            <td width="79" valign="top" height="20">&nbsp;</td>
+          </tr>
+EOM
+}

@@ -1,0 +1,113 @@
+#TextControl {
+	position: relative;
+}
+
+#TextBody {
+	position: fixed;
+	position: expression("relative");
+}
+
+#TextSpell {
+	position: absolute;
+	border: solid 1px #00008B;
+	margin: 1px;
+	padding: 1px;
+	overflow: auto;
+	visibility: hidden;
+	background: #FFFFFF;
+	z-index: 1;
+}
+
+.spellerror {
+	background: yellow;
+	cursor: pointer;
+}
+
+.spellmark {
+	background: #00FF00;
+	cursor: pointer;
+}
+
+.spellchkmsg {
+	color: #000000;
+	height: 22px;
+	border: solid 1px #00FF00;
+	margin: 1px;
+	padding: 1px 1em 1px 1em;
+	font-family: Arial;
+	font-size: 10px;
+	visibility: hidden;
+}
+
+#spell_sugg_menu {
+  display:block;
+  position:absolute;
+  font-family:arial, sans-serif;
+  padding: 0.3em 0 0.3em 0;
+  margin: 2px 0px 2px 0px;
+  background-color:#9DC9FD;
+  color: #214A84;
+  border:1px solid #00008B;
+  z-index:10;
+}
+
+#spell_sugg_menu span.spell_sugg_item {
+  text-decoration:none;
+  display:block;
+  font-family:arial, sans-serif;
+  padding:1px 1em 1px 1em;
+  font-size:83%;
+  cursor:default;
+  white-space:nowrap;
+  border-style:none;
+}
+
+#spell_sugg_menu span.spell_sugg_hover {
+  text-decoration:none;
+  display:block;
+  font-family:arial, sans-serif;
+  padding:1px 1em 1px 1em;
+  font-size:83%;
+  cursor:default;
+  white-space:nowrap;
+  border-style:none;
+  background-color: #C7E1FE;
+  color: #214A84;
+}
+
+#spell_sugg_menu .spell_sugg_sep {
+  text-decoration:none;
+  display:block;
+  font-size: 1px;
+  border-bottom: solid 1px #316Fc6;
+  margin: 0 1em 2px 1em;
+  white-space:nowrap;
+}
+
+#spell_sugg_menu span.spell_sugg_item:hover {
+  background-color: #C7E1FE;
+  color: #214A84;
+}
+ 
+#spell_chg_menu {
+  display:block;
+  position:fixed;
+  position:expression("absolute");
+  font-family:arial, sans-serif;
+  margin: 2px 0px 2px 0px;
+  background-color:#9DC9FD;
+  color: #214A84;
+  border:1px solid #00008B;
+  z-index:10;
+}
+
+#spell_chg_menu span.spell_sugg_item {
+  text-decoration:none;
+  display:block;
+  font-family:arial, sans-serif;
+  padding: 3px 1em 3px 1em;
+  font-size:83%;
+  cursor:default;
+  white-space:nowrap;
+  border-style:none;
+}

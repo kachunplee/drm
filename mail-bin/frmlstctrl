@@ -1,0 +1,143 @@
+#! /usr/bin/perl
+
+use CGI qw(:standard);
+use strict;
+
+use drmdef;
+use drmsettings;
+
+$| = 1;
+print header;
+
+my $who = $ENV{REMOTE_USER};
+
+GetSettings();
+
+my ($c_sel, $c_date, $c_menu, $c_who) =
+	(23, 80, 60, 200);
+if ($listfontsize eq 'x-small')
+{
+	$c_date = 90;
+	$c_menu = 60;
+	$c_who = 215;
+}
+elsif ($listfontsize eq 'small')
+{
+	$c_date = 100;
+	$c_menu = 60;
+	$c_who = 220;
+}
+
+my $sort = "";
+
+if ($ARGV[0] =~ /^-s/)
+{
+	$sort = substr($ARGV[0],2,1);
+	shift;
+}
+
+my $fdid = $ARGV[0];
+$fdid = 'in' if ($fdid eq '');
+
+my $fdnam = ucfirst($fdid);
+
+my ($datesort, $whosort, $subjsort) = ('d', 'w', 's');
+$datesort = 'e' if ($datesort eq $sort);
+$whosort = 'x' if ($whosort eq $sort);
+$subjsort = 't' if ($subjsort eq $sort);
+
+$datesort = '+-s' . $datesort;
+$whosort = '+-s' . $whosort;
+$subjsort = '+-s' . $subjsort;
+
+print <<EOM;
+<html>
+<head>
+<script src=${JSDIR}drmwin.js></script>
+<script src=${JSDIR}foldermenu.js></script>
+<script language=javascript>
+<!--
+var currentsort;
+var foldername = '$fdid';
+
+function LoadList (args)
+{
+	// revert
+	if (("" != args) && (args == currentsort))
+	{
+		args = '+-s' + String.fromCharCode(args.charCodeAt(3)+1);
+	}
+	var href = '/mail/folder?' + foldername + args;
+	window.status = href;
+	parent.DRMLstDisplay.location = href;
+
+	currentsort = args;
+}
+
+function ListSelect()
+{
+        if(parent.listSelectAll)
+        {
+		parent.listSelectAll = false;
+		parent.DRMLstDisplay.document.maillist.reset();
+        }
+        else
+        {
+		parent.listSelectAll = true;
+                for(var x=0; x < parent.DRMLstDisplay.document.maillist.length; x++)
+                {
+                        if(parent.DRMLstDisplay.document.maillist.elements[x].type == \"checkbox\")
+                        {
+                                parent.DRMLstDisplay.document.maillist.elements[x].checked = true;
+                        }
+                }
+        }
+}
+//-->
+</script>
+
+<style type="text/css">
+<!--
+    td.clsColSel {min-width= $c_sel}
+    td.clsColDate {min-width= $c_date}
+    td.clsColMenu {min-width= $c_menu}
+    td.clsColWho {min-width= $c_who}
+
+    a:link, a:active, a:visited {color: #396BB5; text-decoration: none}
+    a:hover {color: #F7D600}
+//-->
+</style>
+</head>
+<body>
+<table border=0 cellpedding=0 cellspacing=0 width=100%>
+<tr>
+<td bgcolor="#EAEFF8" height=25 colspan=5><font face="Verdana,Arial,Helvetica" size="2" color="#396BB5">&nbsp;<b>$fdnam Box</b>&nbsp;</font></td>
+</tr>
+<tr>
+<td bgcolor="#EAEFF8" height=1 valign=bottom width=$c_sel class=clsColSel><img border="0" src="${IMGDIR}spacer_1pixel.gif" width="$c_sel" height="1"></td>
+<td bgcolor="#EAEFF8" height=1 valign=bottom width=$c_date class=clsColSel><img border="0" src="${IMGDIR}spacer_1pixel.gif" width="$c_date" height="1"></td>
+<td bgcolor="#EAEFF8" height=1 valign=bottom width=$c_menu class=clsColMenu><img border="0" src="${IMGDIR}spacer_1pixel.gif" width="$c_menu" height="1"></td>
+<td bgcolor="#EAEFF8" height=1 valign=bottom width=$c_who class=clsColWho><img border="0" src="${IMGDIR}spacer_1pixel.gif" width="$c_who" height="1"></td>
+<td bgcolor="#EAEFF8" height=1 valign=bottom><img border="0" src="${IMGDIR}spacer_1pixel.gif" width="10" height="1"></td>
+</tr>
+<tr>
+<td bgcolor="#F5F8FC" height=18 valign=bottom width=$c_sel class=clsColSel><center><a href=javascript:ListSelect() title="Select / Unselect Messages"><img border="0" src="${IMGDIR}blue_selector.gif" vspace="1" width="16" height="15"></a></center></td>
+<td bgcolor="#F5F8FC" height=18 valign=bottom width=$c_date class=clsColDate><font face="Verdana,Arial,Helvetica" size="2" color="#396BB5"><b><img border="0" src="${IMGDIR}vertical_blue.gif" align="left" width="4" height="15"><a href=javascript:LoadList('$datesort') title="Sort Messages By Date">Date</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></font></td>
+<td bgcolor="#F5F8FC" height=18 valign=bottom width=$c_menu class=clsColMenu><font face="Verdana,Arial,Helvetica" size="2" color="#396BB5"><b><img border="0" src="${IMGDIR}vertical_blue.gif" align="left" width="4" height="15">Status</b></font></td>
+<td bgcolor="#F5F8FC" height=18 valign=bottom width=$c_who class=clsColWho><font face="Verdana,Arial,Helvetica" size="2" color="#396BB5"><b><img border="0" src="${IMGDIR}vertical_blue.gif" align="left" width="4" height="15"><a href=javascript:LoadList('$whosort') title="Sort Messages By Author's Name">Who</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></font></td>
+<td bgcolor="#F5F8FC" height=18 valign=bottom nowrap=><font face="Verdana,Arial,Helvetica" size="2" color="#396BB5"><b><img border="0" src="${IMGDIR}vertical_blue.gif" align="left" width="4" height="15"><a href=javascript:LoadList('$subjsort') title="Sort Message By Subject">Subject</a><img src=${IMGDIR}spacer_1pixel.gif width=400 height=1></b></font></td>
+</tr>
+<tr>
+<td bgcolor="#21599C" colspan=5 height=1><img border=0 src=${IMGDIR}spacer_1pixel.gif width=1 height=1></td>
+</tr>
+</table>
+<script>
+<!--
+	LoadList('');
+//-->
+</script>
+</body>
+</html>
+EOM
+
+exit 0;

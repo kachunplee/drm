@@ -1,0 +1,164 @@
+#! /usr/bin/perl
+
+use lib qw(. /var/local/libdata/perl5);
+
+use strict;
+use CGI;
+use STG_TPL;
+
+my $q = new CGI;
+
+eval
+{
+	my $day = $ARGV[0];
+	if ($day eq '')
+	{
+		$day = 0;
+	}
+
+	my $filename = '/var/log/procmailreport.' . $day;
+	if (-z $filename)
+	{
+		print $q->header,
+			$q->start_html('Email Spam Filter Log Report');
+
+		print "<h2><font face=Arial color=#26589E>Yesterday's Email Spam Filter Log Report</font></h2>\n";
+
+		print <<EOM;
+<p>There's no data in the filter log file.
+EOM
+		print $q->end_html;
+	}
+	else
+	{
+		if (!open(REPORT, "< $filename"))
+		{
+			die "Cannot open $filename";
+		}
+
+		print $q->header,
+			$q->start_html('Email Spam Filter Log Report');
+		print <<EOM;
+
+<h2><font face="Arial" color="#26589E">Email Spam Filter Log Report</font></h2>
+<div align="center">
+  <center>
+  <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#26589E" width="575">
+    <tr>
+      <td bgcolor="#FEFAE7" height="21">
+        <center>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+          <tr>
+            <td width="120">&nbsp;<b><font face="Arial" size="2" color="#26589E">Filter Type:</font></b></td>
+            <td width="45">
+            <p align="right"><b><font face="Arial" size="2" color="#26589E">#&nbsp;</font></b></td>
+            <td width="334"><b><font face="Arial" size="2" color="#26589E">
+            Filter Details:</font></b></td>
+            <td align="right" width="96">&nbsp;</td>
+          </tr>
+        </table>
+        </center>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <center>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="575">
+          <tr>
+            <td colspan="4" height=14>
+            <img border="0" src="/drm/spacer_1pixel.gif" width="1" height="1"></td>
+          </tr>
+EOM
+
+		my $lastfids = '';
+		my ($type, $fids, $count, $rule);
+		my ($countstg, $rulestg);
+		while(<REPORT>)
+		{
+			chomp;
+			($type, $fids, $count, $rule) = split(/\t/,
+				$_, 4);
+			$type =~ s/&/&amp;/g;
+			$type =~ s/</&lt;/g;
+			$type =~ s/>/&gt;/g;
+			$rule =~ s/&/&amp;/g;
+			$rule =~ s/</&lt;/g;
+			$rule =~ s/>/&gt;/g;
+			if ($lastfids ne $fids)
+			{
+				if ($lastfids ne '')
+				{
+					print $countstg;
+					print <<EOM;
+            </font></td>
+            <td width="364" valign="top"><font face="Arial" size="2" color="#26589E">
+EOM
+					print $rulestg;
+					print <<EOM;
+            </font></td>
+            <td width="48" valign="top">
+            <p align="right"><a href=/admin/filterdetail?$day+$lastfids><font color="#26589E">Details</font></a>&nbsp;&nbsp;</td>
+          </tr>
+          <tr>
+            <td width="575" colspan="4" height="25">
+            <hr color="#26589E" width="97%" noshade size="1">
+            </td>
+          </tr>
+EOM
+				}
+				print <<EOM;
+          <tr>
+            <td width="118" valign="top">&nbsp;<font face="Arial" size="2" color="#26589E">$type</font></td>
+            <td width="45" valign="top" align="right"><font face="Arial" size="2" color="#26589E">
+EOM
+				$lastfids = $fids;
+				$countstg = "              $count&nbsp;<br>\n";
+				$rulestg = "              $rule<br>\n";
+				next;
+			}
+			$countstg .= "              $count&nbsp;<br>\n";
+			$rulestg .= "              $rule<br>\n";
+		}
+		if ($lastfids ne '')
+		{
+			print $countstg;
+			print <<EOM;
+            </font></td>
+            <td width="364" valign="top"><font face="Arial" size="2" color="#26589E">
+EOM
+			print $rulestg;
+			print <<EOM;
+            </font></td>
+            <td width="48" valign="top">
+            <p align="right"><a href=/admin/filterdetail?$day+$lastfids><font color="#26589E">Details</font></a>&nbsp;&nbsp;</td>
+          </tr>
+EOM
+		}
+		close(REPORT);
+
+print <<EOM;
+          <tr>
+            <td colspan="4" height=14>
+            <img border="0" src="/drm/spacer_1pixel.gif" width="1" height="1"></td>
+          </tr>
+        </table>
+        </center>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+</body>
+EOM
+		print $q->end_html;
+	}
+};
+
+if ($@)
+{
+	my $errmsg = $@;
+	print 'Content-type: text/html', "\n\n";
+	print "Error Viewing Email Spam Filter Log\n";
+}
+
+exit 0;

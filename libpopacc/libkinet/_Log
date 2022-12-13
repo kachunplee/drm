@@ -1,0 +1,5 @@
+070110	Kachun
+	- Remove throw - does not work with FreeBSD 4.
+
+070105	Kachun
+	- Add alarm/timeout to cnntp.cpp::GetLine0.

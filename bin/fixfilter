@@ -1,0 +1,284 @@
+#! /usr/bin/perl
+
+use strict;
+use Fcntl;
+use DB_File;
+
+my $dir = "/var/local/mail";
+
+my $selBody='<Body>';
+my $hdrBody='B??';
+my @selOption=(
+	'<Any Recipient>',
+	'<Any Header>',
+	'<Any X- Header>'
+);
+my @hdrOption=(
+	'(To|Cc|Bcc)',
+	'[^:]*',
+	'X-[^:]*'
+);
+
+sub ParseRule
+{
+	my ($rule) = @_;
+
+	return 0 unless($rule =~ /^\*(!?)(\^X?-?\[\^:\]\*:|\^[^:]*:|B\?\?)(.*)$/); # end of filter
+
+	my $notCond = ($1 eq "!");
+	my $header = $2;
+	my $pattern = $3;
+	if($header eq $hdrBody)
+	{
+		$header = $selBody;
+		return (1, $notCond, $header, $pattern);
+	}
+
+	$header =~ s/^\^//;
+	chop($header);
+
+	my $n = 0;
+	foreach (@hdrOption)
+	{
+		if($_ eq $header)
+		{
+			$header = $selOption[$n];
+			last;
+		}
+		$n++;
+	}
+
+	if($pattern =~ /^\.\*(.*)/)
+	{
+		$pattern = $1;
+		if($pattern =~ /^\((.*)\)$/)
+		{
+			$pattern = $1;
+		}
+		return (1, $notCond, $header, $pattern);
+	}
+
+	$pattern =~ s/^\s*//;
+	if($pattern =~ /^\((.*)\)$/)
+	{
+		$pattern = $1;
+	}
+	$pattern = '^' . $pattern;
+	return (1, $notCond, $header, $pattern);
+}
+
+my (@pwdent) = getpwnam('http');
+my (@grpent) = getgrnam('mail');
+opendir(MAIL, $dir);
+my ($user, $filterfile, $filterlog, $dbfile);
+while($user = readdir(MAIL))
+{
+	if ($user eq '.' || $user eq '..')
+	{
+		next;
+	}
+
+	my (@u) = getpwnam($user);
+	if (!defined($u[0]) || $u[0] ne $user)
+	{
+		print "$user\n";
+		next;
+	}
+
+	$filterfile = "$dir/$user/.procmailrc";
+	if (-f $filterfile)
+	{
+		#chown($pwdent[2], $pwdent[3], $filterfile);
+		my %DB;
+		$dbfile = "$dir/$user/filter.db";
+		unless (tie (%DB, "DB_File", "$dbfile",
+			O_RDWR|O_CREAT))
+		{
+			print "$user: open filter DB error\n";
+			next;
+		}
+
+		unless (open (RC, "<$filterfile"))
+		{
+			print "$user: open $filterfile error\n";
+			untie %DB;
+			chown($pwdent[2], $grpent[2], $dbfile);
+			next;
+		}
+		unless (open (TMP, ">$filterfile.new"))
+		{
+			print "$user: open $filterfile.new error\n";
+			untie %DB;
+			chown($pwdent[2], $grpent[2], $dbfile);
+			close(RC);
+			next;
+		}
+
+		my $now = time;
+		my $curfilter = 1001;
+		my $currule = 10001;
+		my @rules;
+		my $change = 0;
+		my ($result, $notCond, $header, $pattern, $action, $key);
+		while(<RC>)
+		{
+			next if(/^\s*$/);
+
+			# check if already in new format
+			last if (/^NEXTRECEIPT=\d+\s+NEXTRULE=\d+/);
+
+			if (/^:0/)
+			{
+				if ($curfilter == 1001)
+				{
+					$change = 1;
+					print TMP "NEXTRECEIPT=", $curfilter,
+						" NEXTRULE=", $currule,
+						"\n\n:0\n*^To:\\/.*\n",
+						"{\n",
+						"\tTO_HEADER = \"\$MATCH\"\n",
+						"}\n\n",
+						"\# start here\n";
+				}
+				@rules = ();
+				$result = 0;
+				while(<RC>)
+				{
+					chomp;
+					unless (/^\*/)
+					{
+						# end of rule
+						$action = $_;
+						($result, $notCond, $header,
+							$pattern) =
+							ParseRule($rules[0]);
+						my @pats = split(/\\\|/, $pattern);
+						print TMP "\n# Filter ",
+							$curfilter, "\n";
+
+						$DB{$curfilter} = "$now $header";
+						my $p;
+						if ($header ne $selBody)
+						{
+						  my $i = 0;
+						  foreach (@selOption)
+						  {
+						    if ($header eq $_)
+						    {
+							$header = $hdrOption[$i];
+							last;
+						    }
+						    ++$i;
+						  }
+						}
+						foreach $p (@pats)
+						{
+							my $h = ":0\n*";
+							$h .= "!" if($notCond);
+							if ($header eq $selBody)
+							{
+							    $h .= $hdrBody . $p;
+							}
+							else
+							{
+							    $h .= "^" .
+								$header . ":";
+							    if ($p =~ /^\^(.*)$/)
+							    {
+								$h .= " (" .
+								    $1 . ")";
+							    }
+							    else
+							    {
+								$h .= ".*(" .
+								    $p . ")";
+							    }
+							}
+							print TMP "$h\n";
+							if(defined($rules[1]) &&
+								$rules[1] ne '')
+							{
+							  print TMP $rules[1],
+								"\n";
+							}
+							$key = $curfilter .
+								'-' .
+								$currule;
+		
+							print TMP "{\n",
+							    "\tLOG =\"",
+							    $key, " \"\n",
+							    "\t:0\n\t",
+							    $action, "\n",
+							    "}\n";
+							$p =~ s/\\(.)/$1/g;
+							$DB{$key} = "$now " .
+								$p;
+							$currule++;
+						}
+						print TMP "# End ",
+							$curfilter, "\n";
+						last;
+					}
+					push(@rules, $_);
+				}
+				$curfilter++ if ($result);
+				next;
+			}
+			print TMP $_;
+		}
+
+		close(TMP);
+		close(RC);
+		untie %DB;
+		chown($pwdent[2], $grpent[2], $dbfile);
+
+		if ($change)
+		{
+			unless (open (RC, "<$filterfile.new"))
+			{
+				print "$user: cannot open $filterfile.new to update NEXTRECEIPT\n";
+				next;
+			}
+			unless (open (TMP, ">$filterfile.new1"))
+			{
+				close(RC);
+				print "$user: cannot open $filterfile.new1 to update NEXTRECEIPT\n";
+				next;
+			}
+			while(<RC>)
+			{
+				if (/^NEXTRECEIPT=\d+\s+NEXTRULE=\d+/)
+				{
+					print TMP "NEXTRECEIPT=", $curfilter,
+						" NEXTRULE=", $currule, "\n";
+					next;
+				}
+				print TMP $_;
+			}
+			close(RC);
+			close(TMP);
+			rename ("$filterfile.new1", "$filterfile.new");
+
+			rename ($filterfile, "$filterfile.sav");
+			rename ("$filterfile.new", $filterfile);
+			chown($pwdent[2], $grpent[2], $filterfile);
+		}
+	}
+
+	$filterlog = "$dir/$user/procmail.log";
+	if (-s $filterlog)
+	{
+		rename ($filterlog, "$filterlog.sav");
+		chown($pwdent[2], $pwdent[3], "$filterlog.sav");
+		if (open (LOG, ">$filterlog"))
+		{
+			close(LOG);
+			chown($u[2], $pwdent[3], $filterlog);
+			chmod 0660, $filterlog;
+		}
+	}
+}
+
+closedir(MAIL);
+exit;

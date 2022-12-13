@@ -1,0 +1,35 @@
+#! /usr/bin/perl
+
+use CGI qw(:standard);
+use strict;
+
+use drmdef;
+use drmsettings;
+
+$| = 1;
+print header;
+
+my $headerheight = '93';
+
+use vars qw($DEBUG);
+
+my $BORDER = $DEBUG ? 1 : 0;
+
+my $args = join('+', @ARGV);
+if ($args ne '')
+{
+	$args =~ s/\\//g;
+	$args =~ s/&/&amp;/g;
+	$args =~ s/</&lt;/g;
+	$args =~ s/>/&gt;/g;
+	$args = $args + '+';
+}
+
+print <<EOM;
+<frameset rows="$headerheight,*" framespacing=0 frameborder=$BORDER border=1>
+	<frame name=DRMFilterHeader marginheight=0 marginwidth=0 scrolling=no NORESIZE src=/mail/edfilter?-h$args>
+	<frame name=DRMFilterBody marginheight=5 marginwidth=5 src=/mail/edfilter?$args>
+</frameset>
+EOM
+
+exit 0;
